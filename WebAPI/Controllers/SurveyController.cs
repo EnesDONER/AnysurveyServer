@@ -1,9 +1,6 @@
 ﻿using Business.Abstract;
-using Core.DataAccess;
 using Entities.Concrete;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace WebAPI.Controllers
 {
@@ -47,9 +44,9 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
         [HttpPost("delete")] 
-        public IActionResult Delete(string Id)
+        public IActionResult Delete(Survey survey)
         {
-            var result = _surveyService.Delete(Id);
+            var result = _surveyService.Delete(survey);
             if (result.Success)
             {
                 return Ok(result);

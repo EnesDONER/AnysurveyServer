@@ -5,10 +5,9 @@ using System.Text;
 
 namespace Core.Entities.Concrete
 {
-    public class User 
+    public class User :IEntity
     {
-        public ObjectId Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

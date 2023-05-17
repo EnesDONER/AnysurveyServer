@@ -18,6 +18,7 @@ using DataAccess.Concrete.MongoDB;
 using Business.Abstract;
 using Business.Concrete;
 using Entities.Concrete;
+using DataAccess.Concrete.EntityFramework;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -27,7 +28,11 @@ namespace Business.DependencyResolvers.Autofac
         {
             builder.RegisterType<MSurveyDal>().As<ISurveyDal>().SingleInstance();
             builder.RegisterType<SurveyManager>().As<ISurveyService>().SingleInstance();
+            builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
+            builder.RegisterType<AuthManager>().As<IAuthService>().SingleInstance();
+            builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
             builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
+
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();

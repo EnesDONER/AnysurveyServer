@@ -7,11 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Concrete
+namespace Entities.Concrete;
+
+public class Question
 {
-    public class Question
-    {
-        public string Description { get; set; }
-        public IEnumerable<Option> Options { get; set; }
-    }
+    public string Description { get; set; }
+    public IEnumerable<Option> Options { get; set; }
 }

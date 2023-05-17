@@ -33,9 +33,9 @@ namespace DataAccess.Repository
             _collection.InsertOne(entity);
         }
 
-        public void Delete(string Id)
+        public void Delete(TEntity entity)
         {
-            var objectId = ObjectId.Parse(Id);
+            var objectId = ObjectId.Parse(entity.Id);
             var filter = Builders<TEntity>.Filter.Eq("_id", objectId);
             _collection.DeleteOne(filter);
         }

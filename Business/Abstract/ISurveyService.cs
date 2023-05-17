@@ -12,7 +12,7 @@ namespace Business.Abstract
     public interface ISurveyService
     {
         IResult Add(Survey survey);
-        IResult Delete(string Id);
+        IResult Delete(Survey survey);
         IResult Update(Survey survey);
         IDataResult<Survey> GetById(string Id);
         IDataResult<List<Survey>> GetAll();

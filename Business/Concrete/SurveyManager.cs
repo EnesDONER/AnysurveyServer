@@ -1,13 +1,8 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -24,15 +19,17 @@ namespace Business.Concrete
             _surveydal.Add(survey);
             return new SuccessResult();
         }
-
+        
+        [SecuredOperation("admin")]
+        [Cashei]
         public IDataResult<List<Survey>> GetAll()
         {
             return new SuccessDataResult<List<Survey>>(_surveydal.GetAll());
         }
 
-        public IResult Delete(string Id)
+        public IResult Delete(Survey survey)
         {
-            _surveydal.Delete(Id);
+            _surveydal.Delete(survey);
             return new SuccessResult();
         }
 

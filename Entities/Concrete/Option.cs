@@ -7,10 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Concrete
+namespace Entities.Concrete;
+
+public class Option
 {
-    public class Option
-    {
-        public string Description { get; set; }
-    }
+    public string Description { get; set; }
 }
