@@ -30,6 +30,8 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<SurveyManager>().As<ISurveyService>().SingleInstance();
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
             builder.RegisterType<AuthManager>().As<IAuthService>().SingleInstance();
+            builder.RegisterType<CardManager>().As<ICardService>().SingleInstance();
+            builder.RegisterType<EfCardDal>().As<ICardDal>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
             builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
 
