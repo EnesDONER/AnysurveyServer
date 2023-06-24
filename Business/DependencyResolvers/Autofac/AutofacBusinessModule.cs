@@ -34,6 +34,8 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<EfCardDal>().As<ICardDal>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
             builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
+            builder.RegisterType<MAdDal>().As<IAdDal>().SingleInstance();
+            builder.RegisterType<AdManager>().As<IAdService>().SingleInstance();
 
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 

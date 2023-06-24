@@ -1,20 +1,23 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SurveyController : ControllerBase
+    public class ContentController : ControllerBase
     {
         private readonly ISurveyService _surveyService;
-        public SurveyController(ISurveyService surveyService)
+        private readonly IAdService _addService;
+        public ContentController(ISurveyService surveyService, IAdService addService)
         {
              _surveyService=surveyService;
+            _addService=addService;
         }
-        [HttpGet("getall")]
-        public IActionResult GetAll()
+        [HttpGet("getallsurveys")]
+        public IActionResult GetAllSurvey()
         {
             var result = _surveyService.GetAll();
             if (result.Success)
@@ -23,18 +26,18 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-        [HttpGet("getbyid")]
-        public IActionResult GetById(string Id)
+        [HttpGet("getsurveybyid")]
+        public IActionResult GetSurveyById(string id)
         {
-            var result = _surveyService.GetById(Id);
+            var result = _surveyService.GetById(id);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result.Message);
         }
-        [HttpPost("add")]
-        public IActionResult Add(Survey survey)
+        [HttpPost("addsurvey")]
+        public IActionResult AddSurvey (Survey survey)
         {
             var result = _surveyService.Add(survey);
             if (result.Success)
@@ -43,8 +46,8 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-        [HttpPost("delete")] 
-        public IActionResult Delete(Survey survey)
+        [HttpPost("deletesurvey")] 
+        public IActionResult DeleteSurvey(Survey survey)
         {
             var result = _surveyService.Delete(survey);
             if (result.Success)
@@ -53,10 +56,31 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-        [HttpPost("update")]
-        public IActionResult Update(Survey survey)
+        [HttpPost("updatesurvey")]
+        public IActionResult UpdateSurvey(Survey survey)
         {     
             var result = _surveyService.Update(survey);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getallads")]
+        public IActionResult GetAllAds()
+        {
+            var result = _addService.GetAll();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+        [HttpPost("addad")]
+        public IActionResult AddAd(Ad ad)
+        {
+            var result = _addService.Add(ad);
             if (result.Success)
             {
                 return Ok(result);

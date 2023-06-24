@@ -14,7 +14,7 @@ namespace Business.Abstract
         IResult Add(Survey survey);
         IResult Delete(Survey survey);
         IResult Update(Survey survey);
-        IDataResult<Survey> GetById(string Id);
+        IDataResult<Survey> GetById(string id);
         IDataResult<List<Survey>> GetAll();
     }
 }

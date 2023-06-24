@@ -24,7 +24,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200", "http://localhost:59814")
+               .AllowAnyHeader();
+    });
+});
 builder.Services.AddOptions();
 builder.Services.Configure<MongoSettings>(
     builder.Configuration.GetSection("MongoSettings"));
@@ -69,6 +76,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
 
 app.UseRouting();
 
