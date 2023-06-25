@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.ValidationRules;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
@@ -22,13 +23,15 @@ namespace Business.Concrete
             _cardDal = cardDal;
         }
 
-        [ValidationAspect(typeof(CardValidator))]
+        [CacheRemoveAspect("ICardDal.Get")]
+        //[ValidationAspect(typeof(CardValidator))]
         public IResult Add(Card card)
         {
             _cardDal.Add(card);
             return new SuccessResult();
         }
 
+        [CacheAspect(10)]
         public IDataResult<List<Card>> GetAll()
         {
             return new SuccessDataResult<List<Card>>(_cardDal.GetAll());

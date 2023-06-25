@@ -19,6 +19,9 @@ using Business.Abstract;
 using Business.Concrete;
 using Entities.Concrete;
 using DataAccess.Concrete.EntityFramework;
+using Core.CrossCuttingConcerns.Caching.Microsoft;
+using Core.CrossCuttingConcerns.Caching;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -28,18 +31,22 @@ namespace Business.DependencyResolvers.Autofac
         {
             builder.RegisterType<MSurveyDal>().As<ISurveyDal>().SingleInstance();
             builder.RegisterType<SurveyManager>().As<ISurveyService>().SingleInstance();
+
+            builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
-            builder.RegisterType<AuthManager>().As<IAuthService>().SingleInstance();
+
             builder.RegisterType<CardManager>().As<ICardService>().SingleInstance();
             builder.RegisterType<EfCardDal>().As<ICardDal>().SingleInstance();
-            builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
+
             builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
+
             builder.RegisterType<MAdDal>().As<IAdDal>().SingleInstance();
             builder.RegisterType<AdManager>().As<IAdService>().SingleInstance();
 
+            builder.RegisterType<AuthManager>().As<IAuthService>().SingleInstance();
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
 
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
                 .EnableInterfaceInterceptors(new ProxyGenerationOptions()

@@ -15,8 +15,8 @@ namespace DataAccess.Concrete.MongoDB
 {
     public class MAdDal : MongoEntityRepositoryBase<Ad>, IAdDal
     {
-        private readonly MongoDBContext _context;
-        private readonly IMongoCollection<Ad> _collection;
+        private MongoDBContext _context;
+        private IMongoCollection<Ad> _collection;
         public MAdDal(IOptions<MongoSettings> options) : base(options)
         {
             _context = new MongoDBContext(options);

@@ -10,7 +10,7 @@ namespace WebAPI.Controllers
     public class ContentController : ControllerBase
     {
         private readonly ISurveyService _surveyService;
-        private readonly IAdService _addService;
+        private  IAdService _addService;
         public ContentController(ISurveyService surveyService, IAdService addService)
         {
              _surveyService=surveyService;
