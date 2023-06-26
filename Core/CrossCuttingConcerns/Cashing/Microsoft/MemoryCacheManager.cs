@@ -70,8 +70,6 @@ namespace Core.CrossCuttingConcerns.Caching.Microsoft
             }
 
 
-            var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
             foreach (var key in keys)
             {
                 _memoryCache.Remove(key);

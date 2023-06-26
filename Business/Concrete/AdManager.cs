@@ -13,10 +13,12 @@ namespace Business.Concrete
 {
     public class AdManager : IAdService
     {
-        private  IAdDal _addDal;
-        public AdManager(IAdDal addDal)
+        private readonly IAdDal _addDal;
+        private readonly IWatchedAdService _watchedAdService;
+        public AdManager(IAdDal addDal, IWatchedAdService watchedAdService)
         {
             _addDal=addDal;
+            _watchedAdService=watchedAdService;
         }
         [CacheRemoveAspect("IAdService.Get")]
         public IResult Add(Ad add)
@@ -29,6 +31,13 @@ namespace Business.Concrete
         public IDataResult<List<Ad>> GetAll()
         {
             return new SuccessDataResult<List<Ad>>(_addDal.GetAll());
+        }
+
+        public IDataResult<List<Ad>> GetAllUnWatchedAd()
+        {
+ 
+            return new SuccessDataResult<List<Ad>>(_addDal.GetAll().Where(ad => !_watchedAdService.GetAll().Data.Any(watchedAd => watchedAd.AdId == ad.Id)).ToList());
+
         }
     }
 }

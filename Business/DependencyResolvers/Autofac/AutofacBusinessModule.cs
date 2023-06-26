@@ -32,6 +32,9 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<MSurveyDal>().As<ISurveyDal>().SingleInstance();
             builder.RegisterType<SurveyManager>().As<ISurveyService>().SingleInstance();
 
+            builder.RegisterType<MWatchedAdDal>().As<IWatchedAdDal>().SingleInstance();
+            builder.RegisterType<WatchedAdManager>().As<IWatchedAdService>().SingleInstance();
+
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
 

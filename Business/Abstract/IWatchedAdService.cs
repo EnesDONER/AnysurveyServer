@@ -1,6 +1,5 @@
 ﻿using Core.Utilities.Results;
 using Entities.Concrete;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IAdService
+    public interface IWatchedAdService
     {
-        IResult Add(Ad ad);   
-        IDataResult<List<Ad>> GetAll();
-        IDataResult<List<Ad>> GetAllUnWatchedAd();
+        IResult Add(WatchedAd watcehedAd);
+        IDataResult<List<WatchedAd>> GetAll();
+        IDataResult<List<WatchedAd>> GetByUserId(int userId);
+
     }
 }

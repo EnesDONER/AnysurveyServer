@@ -10,7 +10,7 @@ namespace WebAPI.Controllers
     public class ContentController : ControllerBase
     {
         private readonly ISurveyService _surveyService;
-        private  IAdService _addService;
+        private readonly IAdService _addService;
         public ContentController(ISurveyService surveyService, IAdService addService)
         {
              _surveyService=surveyService;
@@ -71,6 +71,17 @@ namespace WebAPI.Controllers
         public IActionResult GetAllAds()
         {
             var result = _addService.GetAll();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getallunwatchedads")]
+        public IActionResult GetAllUnWatchedAds()
+        {
+            var result = _addService.GetAllUnWatchedAd();
             if (result.Success)
             {
                 return Ok(result);
