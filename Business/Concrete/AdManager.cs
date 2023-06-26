@@ -33,6 +33,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Ad>>(_addDal.GetAll());
         }
 
+        [CacheAspect(10)]
         public IDataResult<List<Ad>> GetAllUnWatchedAd()
         {
  

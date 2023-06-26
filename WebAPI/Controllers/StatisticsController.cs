@@ -30,10 +30,10 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
             
         }
-        [HttpGet("getbyuseridwatchedad")]
-        public IActionResult GetByUserIdWatchedAd(int userId)
+        [HttpGet("getallbyuseridwatchedad")]
+        public IActionResult GetAllByUserIdWatchedAd(int userId)
         {
-            var result = _watchedAdService.GetByUserId(userId);
+            var result = _watchedAdService.GetAllByUserId(userId);
             if (result.Success)
             {
                 return Ok(result);

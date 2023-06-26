@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -18,6 +19,7 @@ namespace Business.Concrete
             _watchedAdDal = watchedAdDal;
         }
 
+        [CacheRemoveAspect("IWatcedAdService.Get")]
         public IResult Add(WatchedAd watcehedAd)
         {
             _watchedAdDal.Add(watcehedAd);
@@ -29,7 +31,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<WatchedAd>>(_watchedAdDal.GetAll());
         }
 
-        public IDataResult<List<WatchedAd>> GetByUserId(int userId)
+        public IDataResult<List<WatchedAd>> GetAllByUserId(int userId)
         {
             return new SuccessDataResult<List<WatchedAd>>(_watchedAdDal.GetAll(wa=>wa.UserId==userId));
 

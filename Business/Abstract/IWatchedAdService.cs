@@ -12,7 +12,7 @@ namespace Business.Abstract
     {
         IResult Add(WatchedAd watcehedAd);
         IDataResult<List<WatchedAd>> GetAll();
-        IDataResult<List<WatchedAd>> GetByUserId(int userId);
+        IDataResult<List<WatchedAd>> GetAllByUserId(int userId);
 
     }
 }
