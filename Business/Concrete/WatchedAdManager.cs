@@ -20,17 +20,20 @@ namespace Business.Concrete
         }
 
         [CacheRemoveAspect("IWatcedAdService.Get")]
+        [CacheRemoveAspect("IUserService.Get")]
         public IResult Add(WatchedAd watcehedAd)
         {
             _watchedAdDal.Add(watcehedAd);
             return new SuccessResult();
         }
-
+       
+        [CacheRemoveAspect("IWatcedAdService.Get")]
         public IDataResult<List<WatchedAd>> GetAll()
         {
             return new SuccessDataResult<List<WatchedAd>>(_watchedAdDal.GetAll());
         }
-
+        
+        [CacheRemoveAspect("IWatcedAdService.Get")]
         public IDataResult<List<WatchedAd>> GetAllByUserId(int userId)
         {
             return new SuccessDataResult<List<WatchedAd>>(_watchedAdDal.GetAll(wa=>wa.UserId==userId));

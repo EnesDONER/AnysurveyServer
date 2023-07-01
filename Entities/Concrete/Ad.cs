@@ -13,7 +13,7 @@ namespace Entities.Concrete
     {
         [BsonId, BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-
+        public int OwnerUserId { get; set; }
         public string CompanyName { get; set; }
         public string Description { get; set; }
         public string VideoURL { get; set; }

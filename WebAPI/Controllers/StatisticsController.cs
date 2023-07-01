@@ -14,10 +14,12 @@ namespace WebAPI.Controllers
     {
         private readonly IWatchedAdService _watchedAdService;
         private IHttpContextAccessor _httpContextAccessor;
-        public StatisticsController(IWatchedAdService watchedAdService)
+        private readonly IUserService _userService;
+        public StatisticsController(IWatchedAdService watchedAdService, IUserService userService)
         {
             _watchedAdService = watchedAdService;
             _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
+            _userService = userService;
         }
         [HttpGet("getallwatchedad")]
         public IActionResult GetAllWatchedAd()
@@ -30,6 +32,7 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
             
         }
+        //id si verilen kişinin izlediği reklamları listeler
         [HttpGet("getallbyuseridwatchedad")]
         public IActionResult GetAllByUserIdWatchedAd(int userId)
         {
@@ -41,6 +44,20 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
 
         }
+        // reklamın id sine göre o reklamı izleyen kullancıları dön
+        [HttpGet("getalluserswhowatchedadsbyadid")]
+        public IActionResult GetAllUsersWhoWatchedAdsByAdId(string id)
+        {
+            var result = _userService.GetAllUsersWhoWatchedAdsByAdId(id);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+
+        }
+
         [HttpPost("addwatchedad")]
         public IActionResult AddWatchedAd(string adId)
         {

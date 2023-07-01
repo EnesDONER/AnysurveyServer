@@ -11,5 +11,6 @@ namespace DataAccess.Abstract
 {
     public interface IAdDal: IEntityRepository<Ad>
     {
+       
     }
 }

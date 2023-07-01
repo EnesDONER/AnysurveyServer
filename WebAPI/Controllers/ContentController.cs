@@ -1,7 +1,9 @@
 ﻿using Business.Abstract;
+using Core.Utilities.IoC;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -11,10 +13,14 @@ namespace WebAPI.Controllers
     {
         private readonly ISurveyService _surveyService;
         private readonly IAdService _addService;
+        private IHttpContextAccessor _httpContextAccessor;
+
         public ContentController(ISurveyService surveyService, IAdService addService)
         {
              _surveyService=surveyService;
             _addService=addService;
+            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
+
         }
         [HttpGet("getallsurveys")]
         public IActionResult GetAllSurvey()
@@ -77,11 +83,26 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-
+        //kişinin izlemediği reklamları listeler
         [HttpGet("getallunwatchedads")]
         public IActionResult GetAllUnWatchedAds()
         {
-            var result = _addService.GetAllUnWatchedAd();
+            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result = _addService.GetAllUnWatchedAd(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+        // kişinin eklediği reklamları listeler
+        [HttpGet("getalladsbyowneruserid")]
+        public IActionResult GetAllAdsByOwnerUserId()
+        {
+            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result =   _addService.GetAllAdsByOwnerUserId(userId);
             if (result.Success)
             {
                 return Ok(result);
@@ -91,7 +112,15 @@ namespace WebAPI.Controllers
         [HttpPost("addad")]
         public IActionResult AddAd(Ad ad)
         {
-            var result = _addService.Add(ad);
+            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Ad newAd = new Ad
+            {
+                CompanyName = ad.CompanyName,
+                Description = ad.Description,
+                OwnerUserId = userId,
+                VideoURL = ad.VideoURL,
+            };
+            var result = _addService.Add(newAd);
             if (result.Success)
             {
                 return Ok(result);

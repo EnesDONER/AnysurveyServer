@@ -16,11 +16,13 @@ namespace Business.Concrete
     {
         private IUserService _userService;
         private ITokenHelper _tokenHelper;
+        private IUserOperationClaimService _userOperationClaimService;
 
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, IUserOperationClaimService userOperationClaimService )
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _userOperationClaimService = userOperationClaimService;
         }
 
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
@@ -63,6 +65,22 @@ namespace Business.Concrete
                 return new ErrorResult("Kullanıcı mevcut");
             }
             return new SuccessResult();
+        }
+
+
+        public IResult UserPartnershipExists(string email)
+        {
+            int userId = _userService.GetByMail(email).Id;
+            foreach (var userOperationClaim in _userOperationClaimService.GetAllByUserId(userId).Data)
+            {
+                if (userOperationClaim.OperationClaimId ==1)
+                {
+                    return new SuccessResult();
+                }
+            }
+            
+           
+            return new ErrorResult("yetkili kullanıcı yok");
         }
 
         public IDataResult<AccessToken> CreateAccessToken(User user)

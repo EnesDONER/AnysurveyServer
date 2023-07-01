@@ -13,6 +13,9 @@ namespace Business.Abstract
     {
         IResult Add(Ad ad);   
         IDataResult<List<Ad>> GetAll();
-        IDataResult<List<Ad>> GetAllUnWatchedAd();
+        IDataResult<Ad> GetById(string id);
+        IDataResult<List<Ad>> GetAllAdsByOwnerUserId(int userId);
+
+        IDataResult<List<Ad>> GetAllUnWatchedAd(int userId);
     }
 }

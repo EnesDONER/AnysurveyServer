@@ -22,5 +22,20 @@ namespace DataAccess.Concrete.MongoDB
             _context = new MongoDBContext(options);
             _collection = _context.GetCollection<WatchedAd>();
         }
+
+        public List<int> GetAllUserWatchedAdByAdId(string id)
+        {
+            var userIds = _collection.AsQueryable()
+                           .Where(wa => wa.AdId == id)
+                           .Join(_context.GetCollection<Ad>().AsQueryable(),
+                                 wa => wa.AdId,
+                                 ad => ad.Id,
+                                 (wa, ad) => ad.OwnerUserId)
+                           .ToList();
+
+            return userIds;
+        }
+
+
     }
 }
