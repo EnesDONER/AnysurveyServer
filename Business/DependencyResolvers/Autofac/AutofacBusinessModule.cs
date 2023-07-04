@@ -29,11 +29,23 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
+            //Mongo
+
             builder.RegisterType<MSurveyDal>().As<ISurveyDal>().SingleInstance();
             builder.RegisterType<SurveyManager>().As<ISurveyService>().SingleInstance();
 
             builder.RegisterType<MWatchedAdDal>().As<IWatchedAdDal>().SingleInstance();
             builder.RegisterType<WatchedAdManager>().As<IWatchedAdService>().SingleInstance();
+
+            builder.RegisterType<MAdDal>().As<IAdDal>().SingleInstance();
+            builder.RegisterType<AdManager>().As<IAdService>().SingleInstance();
+
+            builder.RegisterType<MAdFilterDal>().As<IAdFilterDal>().SingleInstance();
+            builder.RegisterType<AdFilterManager>().As<IAdFilterService>().SingleInstance();
+
+            builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
+
+            //MSql
 
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
@@ -41,14 +53,8 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<EfUserOperationClaimDal>().As<IUserOperationClaimDal>().SingleInstance();
             builder.RegisterType<UserOperationClaimManager>().As<IUserOperationClaimService>().SingleInstance();
 
-
             builder.RegisterType<CardManager>().As<ICardService>().SingleInstance();
             builder.RegisterType<EfCardDal>().As<ICardDal>().SingleInstance();
-
-            builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
-
-            builder.RegisterType<MAdDal>().As<IAdDal>().SingleInstance();
-            builder.RegisterType<AdManager>().As<IAdService>().SingleInstance();
 
             builder.RegisterType<AuthManager>().As<IAuthService>().SingleInstance();
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();

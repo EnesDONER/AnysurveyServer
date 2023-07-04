@@ -15,23 +15,27 @@ namespace WebAPI.Controllers
         private readonly IWatchedAdService _watchedAdService;
         private IHttpContextAccessor _httpContextAccessor;
         private readonly IUserService _userService;
-        public StatisticsController(IWatchedAdService watchedAdService, IUserService userService)
+        private readonly IAdFilterService _adFilterService; 
+        private readonly IAdService _adService;
+        public StatisticsController(IWatchedAdService watchedAdService, IUserService userService, IAdFilterService adFilterService, IAdService adService)
         {
             _watchedAdService = watchedAdService;
             _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
             _userService = userService;
+            _adFilterService = adFilterService;
+            _adService = adService;
         }
-        [HttpGet("getallwatchedad")]
-        public IActionResult GetAllWatchedAd()
-        {
-            var result = _watchedAdService.GetAll();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-            
-        }
+        //[HttpGet("getallwatchedad")]
+        //public IActionResult GetAllWatchedAd()
+        //{
+        //    var result = _watchedAdService.GetAll();
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest(result.Message);
+
+        //}
         //id si verilen kişinin izlediği reklamları listeler
         [HttpGet("getallbyuseridwatchedad")]
         public IActionResult GetAllByUserIdWatchedAd(int userId)
@@ -48,7 +52,7 @@ namespace WebAPI.Controllers
         [HttpGet("getalluserswhowatchedadsbyadid")]
         public IActionResult GetAllUsersWhoWatchedAdsByAdId(string id)
         {
-            var result = _userService.GetAllUsersWhoWatchedAdsByAdId(id);
+            var result = _adService.GetAllUsersWhoWatchedAdsByAdId(id);
 
             if (result.Success)
             {
@@ -69,6 +73,19 @@ namespace WebAPI.Controllers
 
             };
             var result = _watchedAdService.Add(watchedAd);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("addadfilter")]
+        public IActionResult AddAdFilter(AdFilter adFilter)
+        {
+
+            var result = _adFilterService.Add(adFilter);
 
             if (result.Success)
             {
