@@ -14,28 +14,64 @@ namespace WebAPI.Controllers
     {
         private readonly IWatchedAdService _watchedAdService;
         private IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserService _userService;
-        private readonly IAdFilterService _adFilterService; 
         private readonly IAdService _adService;
-        public StatisticsController(IWatchedAdService watchedAdService, IUserService userService, IAdFilterService adFilterService, IAdService adService)
+        private readonly ISurveyService _surveyService;
+        private readonly ISolvedSurveyService _solvedSurveyService;
+        public StatisticsController(IWatchedAdService watchedAdService,IAdService adService,ISurveyService surveyService,ISolvedSurveyService solvedSurveyService)
         {
             _watchedAdService = watchedAdService;
             _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
-            _userService = userService;
-            _adFilterService = adFilterService;
             _adService = adService;
+            _surveyService = surveyService;
+            _solvedSurveyService = solvedSurveyService;
         }
-        //[HttpGet("getallwatchedad")]
-        //public IActionResult GetAllWatchedAd()
-        //{
-        //    var result = _watchedAdService.GetAll();
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
 
-        //}
+        //id si verilen kişinin çözdüğü anketlerilisteler
+        [HttpGet("getallbyuseridsolvedsurvey")]
+        public IActionResult GetAllByUserIdSolvedSurvey(int userId)
+        {
+            var result = _solvedSurveyService.GetAllByUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+
+        }
+        // anketin id sine göre o anketi çözen kullancıları dön
+        [HttpGet("getalluserswhosolvedsurveysbysurveyid")]
+        public IActionResult GetAllUsersWhoSolvedSurveysBySurveyId(string id)
+        {
+            var result = _surveyService.GetAllUsersWhoSolvedSurveyBySurveyId(id);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+
+        }
+
+        [HttpPost("addsolvedsurvey")]
+        public IActionResult AddSolvedSurvey(SolvedSurvey solvedSurvey)
+        {
+            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            SolvedSurvey newSolvedSurvey = new SolvedSurvey
+            {
+                SurveyId = solvedSurvey.SurveyId,
+                UserId = userId,
+                QuestionsAnswers = solvedSurvey.QuestionsAnswers
+            };
+            var result = _solvedSurveyService.Add(newSolvedSurvey);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+
         //id si verilen kişinin izlediği reklamları listeler
         [HttpGet("getallbyuseridwatchedad")]
         public IActionResult GetAllByUserIdWatchedAd(int userId)
@@ -73,19 +109,6 @@ namespace WebAPI.Controllers
 
             };
             var result = _watchedAdService.Add(watchedAd);
-
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
-
-        [HttpPost("addadfilter")]
-        public IActionResult AddAdFilter(AdFilter adFilter)
-        {
-
-            var result = _adFilterService.Add(adFilter);
 
             if (result.Success)
             {

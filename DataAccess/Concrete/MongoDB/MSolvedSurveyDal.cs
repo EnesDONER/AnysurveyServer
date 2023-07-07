@@ -13,15 +13,14 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.MongoDB
 {
-    public class MWatchedAdDal : MongoEntityRepositoryBase<WatchedAd>, IWatchedAdDal
+    public class MSolvedSurveyDal:MongoEntityRepositoryBase<SolvedSurvey>,ISolvedSurveyDal
     {
         private MongoDBContext _context;
-        private IMongoCollection<WatchedAd> _collection;
-        public MWatchedAdDal(IOptions<MongoSettings> options) : base(options)
+        private IMongoCollection<SolvedSurvey> _collection;
+        public MSolvedSurveyDal(IOptions<MongoSettings> options) : base(options)
         {
             _context = new MongoDBContext(options);
-            _collection = _context.GetCollection<WatchedAd>();
+            _collection = _context.GetCollection<SolvedSurvey>();
         }
-
     }
 }

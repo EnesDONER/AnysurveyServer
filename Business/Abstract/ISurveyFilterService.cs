@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IAdFilterService
+    public interface ISurveyFilterService
     {
-        IResult Update(AdFilter adFilter);
-        IDataResult<AdFilter> GetByAdId(string adId);
-
-        //IDataResult<List<AdFilter>> GetAll();
+        IResult Add(SurveyFilter surveyFilter);
+        IResult Update(SurveyFilter surveyFilter);
+        IDataResult<SurveyFilter> GetBySurveyId(string surveyId);
     }
 }

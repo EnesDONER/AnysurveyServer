@@ -34,6 +34,12 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<MSurveyDal>().As<ISurveyDal>().SingleInstance();
             builder.RegisterType<SurveyManager>().As<ISurveyService>().SingleInstance();
 
+            builder.RegisterType<MSolvedSurveyDal>().As<ISolvedSurveyDal>().SingleInstance();
+            builder.RegisterType<SolvedSurveyManager>().As<ISolvedSurveyService>().SingleInstance();
+
+            builder.RegisterType<MSurveyFilterDal>().As<ISurveyFilterDal>().SingleInstance();
+            builder.RegisterType<SurveyFilterManager>().As<ISurveyFilterService>().SingleInstance();
+
             builder.RegisterType<MWatchedAdDal>().As<IWatchedAdDal>().SingleInstance();
             builder.RegisterType<WatchedAdManager>().As<IWatchedAdService>().SingleInstance();
 
@@ -43,7 +49,7 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<MAdFilterDal>().As<IAdFilterDal>().SingleInstance();
             builder.RegisterType<AdFilterManager>().As<IAdFilterService>().SingleInstance();
 
-            builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
+            //builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
 
             //MSql
 

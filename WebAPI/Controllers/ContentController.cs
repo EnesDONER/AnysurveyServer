@@ -45,13 +45,48 @@ namespace WebAPI.Controllers
         [HttpPost("addsurvey")]
         public IActionResult AddSurvey (Survey survey)
         {
-            var result = _surveyService.Add(survey);
+            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Survey newSurvey = new Survey
+            {
+                Title = survey.Title,
+                Description =survey.Description,
+                OwnerUserId = userId,
+                Questions = survey.Questions
+            };
+            var result = _surveyService.Add(newSurvey);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result.Message);
         }
+        //kişinin eklediği anketleri listeler
+        [HttpGet("getallsurveysbyowneruserid")]
+        public IActionResult GetAllSurveysByOwnerUserId()
+        {
+            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result = _surveyService.GetAllSurveysByOwnerUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+        //kişinin çözmediği anketleri listeler
+        [HttpGet("getallunsolvedsurveys")]
+        public IActionResult GetAllUnsolvedSurveys()
+        {
+            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result =  _surveyService.GetAllUnsolvedSurvey(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
         //[HttpPost("deletesurvey")] 
         //public IActionResult DeleteSurvey(Survey survey)
         //{
