@@ -29,6 +29,11 @@ namespace Business.Concrete
             return new SuccessDataResult<List<SolvedSurvey>>(_solvedSurveyDal.GetAll());
         }
 
+        public IDataResult<List<SolvedSurvey>> GetAllBySurveyId(string surveyId)
+        {
+            return new SuccessDataResult<List<SolvedSurvey>>(_solvedSurveyDal.GetAll(ss=>ss.SurveyId==surveyId));
+        }
+
         public IDataResult<List<SolvedSurvey>> GetAllByUserId(int userId)
         {
             return new SuccessDataResult<List<SolvedSurvey>>(_solvedSurveyDal.GetAll(ss=>ss.UserId==userId));

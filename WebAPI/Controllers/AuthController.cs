@@ -23,6 +23,28 @@ namespace WebAPI.Controllers
             _userOperationClaimService = userOperationClaimService;
             _userService = userService;
         }
+        [HttpPost("sendresetpasswordmail")]
+        public ActionResult SendResetPasswordMail(string email)
+        {
+            var result = _authService.SendResetPasswordMail(email);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result.Message);
+        }
+        [HttpPost("resetpassword")]
+        public ActionResult SendResetPasswordMail(UserForResetPasswordDto userForResetPassword)
+        {
+            var result = _authService.ResetPassword(userForResetPassword);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result.Message);
+        }
 
         [HttpPost("login")]
         public ActionResult Login(UserForLoginDto userForLoginDto)

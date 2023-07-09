@@ -16,6 +16,8 @@ namespace Core.Entities.Concrete
         public DateTime BirthDay { get; set; }
         public string ASTWalletAddress { get; set; }
         public string Images { get; set; }
+        public string ResetToken { get; set; }
+        public DateTime ResetTokenExpiration { get; set; }
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }
         public bool Status { get; set; }

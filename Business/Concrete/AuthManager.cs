@@ -8,8 +8,12 @@ using Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using Business.Security.Encryption;
 
 namespace Business.Concrete
 {
@@ -90,5 +94,60 @@ namespace Business.Concrete
             var accessToken = _tokenHelper.CreateToken(user, claims);
             return new SuccessDataResult<AccessToken>(accessToken, "Token oluşturuldu");
         }
+        public IResult SendResetPasswordMail(string email)
+        {
+            if (UserExists(email).Success)
+            {
+                return new ErrorResult();
+            }
+
+            int codeLength = 6;
+            string resetToken = VerificationCodeHelper.GenerateVerificationCode(codeLength);
+
+            using (MailMessage mail = new MailMessage())
+            {
+                mail.From = new MailAddress("seenbilgi@outlook.com");
+                mail.To.Add(email);
+                mail.Subject = $"Anysurvey email doğrulaması.";
+                mail.Body = $"bu bağlantıyla tıklayarak güncelleyin http://localhost:4200/forgetPassword/{resetToken}";
+                mail.IsBodyHtml = true;
+
+                using (SmtpClient smtp = new SmtpClient("smtp.office365.com", 587))
+                {
+                    smtp.Credentials = new NetworkCredential("seenbilgi@outlook.com", "123456789seen");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+                }
+            }
+            User user = _userService.GetByMail(email);
+            User updatedUser = new User();
+            updatedUser = user;
+            updatedUser.ResetTokenExpiration = DateTime.Now.AddHours(1);
+            updatedUser.ResetToken = resetToken;
+            _userService.Update(updatedUser);
+            return(new SuccessResult());
+        }
+
+        public IResult ResetPassword(UserForResetPasswordDto userForResetPasswordDto)
+        {
+            if (UserExists(userForResetPasswordDto.Email).Success)
+            {
+                return new ErrorResult();
+            }
+            User user = _userService.GetByMail(userForResetPasswordDto.Email);
+            if (user.ResetToken == userForResetPasswordDto.ResetToken && user.ResetTokenExpiration > DateTime.Now)
+            {
+                byte[] passwordHash, passwordSalt;
+                HashingHelper.CreatePasswordHash(userForResetPasswordDto.Password, out passwordHash, out passwordSalt);
+                User updatedUser = new User();
+                updatedUser = user;
+                updatedUser.PasswordHash = passwordHash;
+                updatedUser.PasswordSalt = passwordSalt;
+                _userService.Update(updatedUser);
+                return (new SuccessResult());
+            }
+            else { return new ErrorResult(); }
+        }
+
     }
 }

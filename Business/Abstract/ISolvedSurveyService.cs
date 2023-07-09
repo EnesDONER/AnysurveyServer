@@ -13,5 +13,7 @@ namespace Business.Abstract
         IResult Add(SolvedSurvey solvedSurvey);
         IDataResult<List<SolvedSurvey>> GetAll();
         IDataResult<List<SolvedSurvey>> GetAllByUserId(int userId);
+        IDataResult<List<SolvedSurvey>> GetAllBySurveyId(string surveyId);
+
     }
 }

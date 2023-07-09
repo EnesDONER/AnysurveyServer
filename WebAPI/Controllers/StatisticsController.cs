@@ -26,11 +26,11 @@ namespace WebAPI.Controllers
             _solvedSurveyService = solvedSurveyService;
         }
 
-        //id si verilen kişinin çözdüğü anketlerilisteler
-        [HttpGet("getallbyuseridsolvedsurvey")]
-        public IActionResult GetAllByUserIdSolvedSurvey(int userId)
+        //anket idsine göre çözülmüş anketleri listele
+        [HttpGet("getallbysurveyidsolvedsurvey")]
+        public IActionResult GetAllSolvedSurveyBySurveyId(string surveyId)
         {
-            var result = _solvedSurveyService.GetAllByUserId(userId);
+            var result = _solvedSurveyService.GetAllBySurveyId(surveyId);
             if (result.Success)
             {
                 return Ok(result);
@@ -38,6 +38,19 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
 
         }
+
+        ////id si verilen kişinin çözdüğü anketlerilisteler
+        //[HttpGet("getallbyuseridsolvedsurvey")]
+        //public IActionResult GetAllByUserIdSolvedSurvey(int userId)
+        //{
+        //    var result = _solvedSurveyService.GetAllByUserId(userId);
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest(result.Message);
+
+        //}
         // anketin id sine göre o anketi çözen kullancıları dön
         [HttpGet("getalluserswhosolvedsurveysbysurveyid")]
         public IActionResult GetAllUsersWhoSolvedSurveysBySurveyId(string id)
