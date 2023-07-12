@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="7.0.1" />
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
+    <PackageReference Include="Iyzipay" Version="2.1.55" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,9 +12,9 @@ namespace Business.ValidationRules
     {
         public CardValidator()
         {
-            RuleFor(c => c.CVC).Length(3);
-            RuleFor(c => c.Month).Length(2);
-            RuleFor(c => c.Year).Length(4);
+            RuleFor(c => c.Cvc).Length(3);
+            RuleFor(c => c.ExpireMonth).Length(2);
+            RuleFor(c => c.ExpireYear).Length(4);
 
         }
     }

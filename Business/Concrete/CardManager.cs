@@ -31,11 +31,21 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        [CacheAspect(10)]
-        public IDataResult<List<Card>> GetAll()
+        public IDataResult<List<Card>> GetAllCardByUserId(int userId)
         {
-            return new SuccessDataResult<List<Card>>(_cardDal.GetAll());
+            return new SuccessDataResult<List<Card>>(_cardDal.GetAll(c=>c.UserId==userId));
         }
 
+        //[CacheAspect(10)]
+        //public IDataResult<List<Card>> GetAll()
+        //{
+        //    return new SuccessDataResult<List<Card>>(_cardDal.GetAll());
+        //}
+
+
+        public IDataResult<Card> GetById(int id)
+        {
+            return new SuccessDataResult<Card>(_cardDal.Get(c => c.Id == id));
+        }
     }
 }
