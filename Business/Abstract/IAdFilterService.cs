@@ -13,6 +13,5 @@ namespace Business.Abstract
         IResult Update(AdFilter adFilter);
         IDataResult<AdFilter> GetByAdId(string adId);
 
-        //IDataResult<List<AdFilter>> GetAll();
     }
 }

@@ -24,7 +24,7 @@ namespace Business.Concrete
         }
 
         [CacheRemoveAspect("ICardDal.Get")]
-        //[ValidationAspect(typeof(CardValidator))]
+        [ValidationAspect(typeof(CardValidator))]
         public IResult Add(Card card)
         {
             _cardDal.Add(card);
@@ -35,13 +35,6 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Card>>(_cardDal.GetAll(c=>c.UserId==userId));
         }
-
-        //[CacheAspect(10)]
-        //public IDataResult<List<Card>> GetAll()
-        //{
-        //    return new SuccessDataResult<List<Card>>(_cardDal.GetAll());
-        //}
-
 
         public IDataResult<Card> GetById(int id)
         {

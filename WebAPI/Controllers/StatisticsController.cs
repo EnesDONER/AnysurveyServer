@@ -39,18 +39,6 @@ namespace WebAPI.Controllers
 
         }
 
-        ////id si verilen kişinin çözdüğü anketlerilisteler
-        //[HttpGet("getallbyuseridsolvedsurvey")]
-        //public IActionResult GetAllByUserIdSolvedSurvey(int userId)
-        //{
-        //    var result = _solvedSurveyService.GetAllByUserId(userId);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
-
-        //}
         // anketin id sine göre o anketi çözen kullancıları dön
         [HttpGet("getalluserswhosolvedsurveysbysurveyid")]
         public IActionResult GetAllUsersWhoSolvedSurveysBySurveyId(string id)

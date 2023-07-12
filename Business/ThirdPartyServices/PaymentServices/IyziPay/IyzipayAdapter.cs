@@ -1,4 +1,5 @@
 ﻿using Core.Entities.Concrete;
+using Core.Utilities.Results;
 using Entities.Concrete;
 using Iyzipay;
 using Iyzipay.Model;
@@ -10,11 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Card = Entities.Concrete.Card;
 
-namespace Business.ThirdPartyServices.IyziPay
+namespace Business.ThirdPartyServices.PaymentServices.IyziPay
 {
-    public class PaymentTransactions
+    public class IyzipayAdapter:IThirdPartyPaymentService
     {
-        public static Payment Pay(User user,Card card,decimal amount)
+        public IResult Pay(User user, Card card, decimal amount)
         {
             CreatePaymentRequest request = new CreatePaymentRequest();
             request.Locale = Locale.EN.ToString();
@@ -71,7 +72,12 @@ namespace Business.ThirdPartyServices.IyziPay
             options.SecretKey = "sandbox-9ECYbcJwyGV5RIzqiPf00hSC8PdRoflA";
             options.BaseUrl = "https://sandbox-api.iyzipay.com";
             Payment payment = Payment.Create(request, options);
-            return payment;
+            if (payment.ErrorMessage != null)
+            {
+                return new ErrorResult(payment.ErrorMessage);
+            }
+            return new SuccessResult();
+
         }
     }
 }

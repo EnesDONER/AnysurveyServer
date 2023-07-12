@@ -63,10 +63,5 @@ namespace Business.Concrete
             return new ErrorResult();
         }
 
-
-        //public IDataResult<List<AdFilter>> GetAll()
-        //{
-        //    return new SuccessDataResult<List<AdFilter>>(_adFilterDal.GetAll());
-        //}
     }
 }

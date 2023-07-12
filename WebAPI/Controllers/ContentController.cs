@@ -87,38 +87,6 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        //[HttpPost("deletesurvey")] 
-        //public IActionResult DeleteSurvey(Survey survey)
-        //{
-        //    var result = _surveyService.Delete(survey);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
-        //}
-        //[HttpPost("updatesurvey")]
-        //public IActionResult UpdateSurvey(Survey survey)
-        //{     
-        //    var result = _surveyService.Update(survey);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
-        //}
-
-        //[HttpGet("getallads")]
-        //public IActionResult GetAllAds()
-        //{
-        //    var result = _addService.GetAll();
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
-        //}
-
         //kişinin izlemediği reklamları listeler
         [HttpGet("getallunwatchedads")]
         public IActionResult GetAllUnWatchedAds()

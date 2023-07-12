@@ -22,6 +22,8 @@ using DataAccess.Concrete.EntityFramework;
 using Core.CrossCuttingConcerns.Caching.Microsoft;
 using Core.CrossCuttingConcerns.Caching;
 using Microsoft.Extensions.DependencyInjection;
+using Business.ThirdPartyServices.PaymentServices;
+using Business.ThirdPartyServices.PaymentServices.IyziPay;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -64,6 +66,10 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<AuthManager>().As<IAuthService>().SingleInstance();
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
+            //services
+            builder.RegisterType<IyzipayAdapter>().As<IThirdPartyPaymentService>().SingleInstance();
+
 
             var assembly = Assembly.GetExecutingAssembly();
 

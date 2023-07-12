@@ -13,8 +13,9 @@ namespace Business.ValidationRules
         public CardValidator()
         {
             RuleFor(c => c.Cvc).Length(3);
-            RuleFor(c => c.ExpireMonth).Length(2);
+            RuleFor(c => c.ExpireMonth).MaximumLength(2);
             RuleFor(c => c.ExpireYear).Length(4);
+            RuleFor(c => c.CardNumber).MaximumLength(16);
 
         }
     }

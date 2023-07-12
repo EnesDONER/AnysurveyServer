@@ -11,7 +11,6 @@ namespace Business.Abstract
     public interface ICardService
     {
         IResult Add(Card survey);
-        //IDataResult<List<Card>> GetAll();
         IDataResult<List<Card>> GetAllCardByUserId(int userId);
         IDataResult<Card> GetById(int id);
     }

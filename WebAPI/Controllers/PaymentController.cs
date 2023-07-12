@@ -26,16 +26,6 @@ namespace WebAPI.Controllers
             _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
 
         }
-        //[HttpGet("getall")]
-        //public IActionResult GetAll()
-        //{
-        //    var result = _cardService.GetAll();
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
-        //}
         [HttpPost("addcard")]
         public IActionResult AddCard(Card card)
         {

@@ -42,18 +42,6 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-        //[HttpPost("addadfilter")]
-        //public IActionResult AddAdFilter(AdFilter adFilter)
-        //{
-
-        //    var result = _adFilterService.Add(adFilter);
-
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result.Message);
-        //}
 
         [HttpPost("updateadfilter")]
         public IActionResult UpdateAdFilter(AdFilter adFilter)
