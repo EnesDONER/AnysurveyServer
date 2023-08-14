@@ -13,14 +13,13 @@ namespace WebAPI.Controllers
     public class StatisticsController : ControllerBase
     {
         private readonly IWatchedAdService _watchedAdService;
-        private IHttpContextAccessor _httpContextAccessor;
         private readonly IAdService _adService;
         private readonly ISurveyService _surveyService;
         private readonly ISolvedSurveyService _solvedSurveyService;
         public StatisticsController(IWatchedAdService watchedAdService,IAdService adService,ISurveyService surveyService,ISolvedSurveyService solvedSurveyService)
         {
             _watchedAdService = watchedAdService;
-            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
+
             _adService = adService;
             _surveyService = surveyService;
             _solvedSurveyService = solvedSurveyService;
@@ -31,6 +30,20 @@ namespace WebAPI.Controllers
         public IActionResult GetAllSolvedSurveyBySurveyId(string surveyId)
         {
             var result = _solvedSurveyService.GetAllBySurveyId(surveyId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+
+        }
+
+        // istatistik getirir hangi soruya kaç kişi hangi cevabı verdiğini
+        [HttpGet("getallsurveystatistics")]
+        public IActionResult GetAllSurveyStatistics(string id)
+        {
+            var result = _solvedSurveyService.GetAllSolvedSurveyStatisticsBySurveyId(id);
+
             if (result.Success)
             {
                 return Ok(result);
@@ -56,14 +69,8 @@ namespace WebAPI.Controllers
         [HttpPost("addsolvedsurvey")]
         public IActionResult AddSolvedSurvey(SolvedSurvey solvedSurvey)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            SolvedSurvey newSolvedSurvey = new SolvedSurvey
-            {
-                SurveyId = solvedSurvey.SurveyId,
-                UserId = userId,
-                QuestionsAnswers = solvedSurvey.QuestionsAnswers
-            };
-            var result = _solvedSurveyService.Add(newSolvedSurvey);
+       
+            var result = _solvedSurveyService.Add(solvedSurvey);
 
             if (result.Success)
             {
@@ -100,15 +107,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("addwatchedad")]
-        public IActionResult AddWatchedAd(string adId)
+        public IActionResult AddWatchedAd(WatchedAd watchedAd)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            WatchedAd watchedAd = new WatchedAd
-            {
-                UserId = userId,
-                AdId = adId,
 
-            };
             var result = _watchedAdService.Add(watchedAd);
 
             if (result.Success)

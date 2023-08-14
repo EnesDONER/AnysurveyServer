@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -25,7 +26,7 @@ namespace Business.Concrete
                 return new ErrorResult();
             }
             _userOperationClaimDal.Add(userOperationClaim);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
         }
         
         public IDataResult<List<UserOperationClaim>> GetAll()

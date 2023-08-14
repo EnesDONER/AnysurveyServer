@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Business.ValidationRules;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
@@ -28,7 +29,7 @@ namespace Business.Concrete
         public IResult Add(Card card)
         {
             _cardDal.Add(card);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
         }
 
         public IDataResult<List<Card>> GetAllCardByUserId(int userId)

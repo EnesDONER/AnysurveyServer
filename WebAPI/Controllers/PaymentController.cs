@@ -17,23 +17,19 @@ namespace WebAPI.Controllers
         private readonly ICardService _cardService;
         private readonly IPaymentService _paymentService;
         private readonly IUserService _userService;
-        private IHttpContextAccessor _httpContextAccessor;
         public PaymentController(ICardService cardService,IPaymentService paymentService,IUserService userService)
         {
             _cardService = cardService;
             _paymentService = paymentService;
             _userService = userService;
-            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
+
 
         }
         [HttpPost("addcard")]
         public IActionResult AddCard(Card card)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Card updatedCard = new Card();
-            updatedCard = card;
-            updatedCard.UserId = userId;
-            var result = _cardService.Add(updatedCard);
+          
+            var result = _cardService.Add(card);
             if (result.Success)
             {
                 return Ok(result);
@@ -43,9 +39,8 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("getallcardbyuserid")]
-        public IActionResult GetAllCard()
+        public IActionResult GetAllCard(int userId)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var result = _cardService.GetAllCardByUserId(userId);
             if (result.Success)
@@ -56,9 +51,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("payment")]
-        public IActionResult Payment(int cardId,decimal amount)
+        public IActionResult Payment(int cardId,decimal amount,int userId)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var result= _paymentService.Pay(userId,cardId,amount);
             if (result.Success)

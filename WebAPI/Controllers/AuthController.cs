@@ -116,6 +116,18 @@ namespace WebAPI.Controllers
 
             return BadRequest(result.Message);
         }
+        [HttpGet("getuserbyid")]
+        public IActionResult GetUserById(int id)
+        {
+            var result = _userService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result.Message);
+        }
+
         [HttpPost("loginpartnership")]
         public ActionResult LoginPartnership(UserForLoginDto userForLoginDto)
         {

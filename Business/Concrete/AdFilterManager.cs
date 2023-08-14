@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Business.ValidationRules;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
@@ -41,7 +42,7 @@ namespace Business.Concrete
                 return new SuccessResult();
             }
             _adFilterDal.Add(adFilter);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
         }
 
         public IDataResult<AdFilter> GetByAdId(string adId)
@@ -54,14 +55,14 @@ namespace Business.Concrete
             return new SuccessDataResult<AdFilter>(data);
         }
 
-        private IResult CheckAdFilterIsExist(string adId)
-        {
-            if (GetByAdId(adId).Success)
-            {
-                return new SuccessResult();
-            }
-            return new ErrorResult();
-        }
+        //private IResult CheckAdFilterIsExist(string adId)
+        //{
+        //    if (GetByAdId(adId).Success)
+        //    {
+        //        return new SuccessResult();
+        //    }
+        //    return new ErrorResult();
+        //}
 
     }
 }

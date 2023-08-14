@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.MongoDB;
@@ -20,10 +21,7 @@ namespace Business.Concrete
             _surveyFilterDal = surveyFilterDal;
         }
 
-        public IResult Add(SurveyFilter surveyFilter)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public IDataResult<SurveyFilter> GetBySurveyId(string surveyId)
         {
@@ -50,10 +48,10 @@ namespace Business.Concrete
                     GenderId = surveyFilter.GenderId
                 };
                 _surveyFilterDal.Update(updatedSurveyFilter);
-                return new SuccessResult();
+                return new SuccessResult(Messages.Updated);
             }
             _surveyFilterDal.Add(surveyFilter);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
         }
     }
 }

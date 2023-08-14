@@ -20,11 +20,11 @@ namespace Business.Concrete
         {
             var user = _userService.GetById(userId).Data;
             if(user == null)
-                return new ErrorResult("user Null");
+                return new ErrorResult("user was not exist");
 
             var card = _cardService.GetById(cardId).Data;
             if (card == null)
-                return new ErrorResult("card null");
+                return new ErrorResult("card was not exist");
 
             var result = _thirdPartyPaymentService.Pay(user,card,amount);
             if (!result.Success)

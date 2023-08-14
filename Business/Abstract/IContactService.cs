@@ -1,5 +1,5 @@
 ﻿using Core.Utilities.Results;
-using Entities.Concrete;
+using Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface ISurveyFilterService
+    public interface IContactService
     {
-        IResult Update(SurveyFilter surveyFilter);
-        IDataResult<SurveyFilter> GetBySurveyId(string surveyId);
+        IResult SendMessage(Contact contact);
     }
 }

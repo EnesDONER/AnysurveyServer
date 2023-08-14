@@ -13,13 +13,12 @@ namespace WebAPI.Controllers
     {
         private readonly ISurveyService _surveyService;
         private readonly IAdService _addService;
-        private IHttpContextAccessor _httpContextAccessor;
+
 
         public ContentController(ISurveyService surveyService, IAdService addService)
         {
              _surveyService=surveyService;
             _addService=addService;
-            _httpContextAccessor = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
 
         }
         [HttpGet("getallsurveys")]
@@ -45,12 +44,12 @@ namespace WebAPI.Controllers
         [HttpPost("addsurvey")]
         public IActionResult AddSurvey (Survey survey)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             Survey newSurvey = new Survey
             {
                 Title = survey.Title,
                 Description =survey.Description,
-                OwnerUserId = userId,
+                OwnerUserId = survey.OwnerUserId,
                 Questions = survey.Questions
             };
             var result = _surveyService.Add(newSurvey);
@@ -62,9 +61,9 @@ namespace WebAPI.Controllers
         }
         //kişinin eklediği anketleri listeler
         [HttpGet("getallsurveysbyowneruserid")]
-        public IActionResult GetAllSurveysByOwnerUserId()
+        public IActionResult GetAllSurveysByOwnerUserId(int userId)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var result = _surveyService.GetAllSurveysByOwnerUserId(userId);
             if (result.Success)
@@ -75,9 +74,9 @@ namespace WebAPI.Controllers
         }
         //kişinin çözmediği anketleri listeler
         [HttpGet("getallunsolvedsurveys")]
-        public IActionResult GetAllUnsolvedSurveys()
+        public IActionResult GetAllUnsolvedSurveys(int userId)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var result =  _surveyService.GetAllUnsolvedSurvey(userId);
             if (result.Success)
@@ -89,9 +88,9 @@ namespace WebAPI.Controllers
 
         //kişinin izlemediği reklamları listeler
         [HttpGet("getallunwatchedads")]
-        public IActionResult GetAllUnWatchedAds()
+        public IActionResult GetAllUnWatchedAds(int userId)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var result = _addService.GetAllUnWatchedAd(userId);
             if (result.Success)
@@ -102,9 +101,9 @@ namespace WebAPI.Controllers
         }
         // kişinin eklediği reklamları listeler
         [HttpGet("getalladsbyowneruserid")]
-        public IActionResult GetAllAdsByOwnerUserId()
+        public IActionResult GetAllAdsByOwnerUserId(int userId)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+           // int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var result =   _addService.GetAllAdsByOwnerUserId(userId);
             if (result.Success)
@@ -116,15 +115,8 @@ namespace WebAPI.Controllers
         [HttpPost("addad")]
         public IActionResult AddAd(Ad ad)
         {
-            int userId = Convert.ToInt16(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Ad newAd = new Ad
-            {
-                CompanyName = ad.CompanyName,
-                Description = ad.Description,
-                OwnerUserId = userId,
-                VideoURL = ad.VideoURL,
-            };
-            var result = _addService.Add(newAd);
+     
+            var result = _addService.Add(ad);
             if (result.Success)
             {
                 return Ok(result);

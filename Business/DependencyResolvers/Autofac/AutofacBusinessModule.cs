@@ -70,6 +70,8 @@ namespace Business.DependencyResolvers.Autofac
             //services
             builder.RegisterType<IyzipayAdapter>().As<IThirdPartyPaymentService>().SingleInstance();
 
+            builder.RegisterType<ContactManager>().As<IContactService>().SingleInstance();
+
 
             var assembly = Assembly.GetExecutingAssembly();
 

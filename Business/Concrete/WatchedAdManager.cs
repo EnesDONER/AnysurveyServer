@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -24,7 +25,7 @@ namespace Business.Concrete
         public IResult Add(WatchedAd watcehedAd)
         {
             _watchedAdDal.Add(watcehedAd);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
         }
        
         [CacheRemoveAspect("IWatcedAdService.Get")]

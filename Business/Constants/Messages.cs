@@ -1,16 +1,15 @@
 ﻿namespace Business.Constants
 {
-    public class Messages
+    public static class Messages
     {
-        public static string AuthorizationDenied = "Yetkiniz Yok.";
+        public static string AuthorizationDenied = "No authorized user";
 
-        public static string UserAdded = "Kullanıcı veri tabanına eklendi!\n";
-        public static string UserDeleted = "Kullanıcı veri tabanından kaldırıldı!\n";
-        public static string UserUpdated = "Kullanıcı bilgisi güncellendi!\n";
-        public static string ListOfUsers = "Kullanıcılar Listeleniyor!\n";
-        public static string UserInfo = "Kullanıcı bilgileri : \n";
-        public static string CarCountOfColorError = "Bir araba en fazla 5 renk seçeneğine sahiptir!\n";
-        public static string CarNameExistBefore = "Aynı araç ismine sahip başka bir araç daha vardır!";
+        public static string Added = "successfully added";
 
+        public static string Updated = "successfully updated";
+
+        public static string Error = "Error";
+
+        public static string Deleted = "successfully deleted";
     }
 }

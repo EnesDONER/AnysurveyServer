@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspects.Autofac;
+using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities;
 using Core.Entities.Concrete;
@@ -12,6 +13,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using SharpCompress.Common;
 using System;
+using System.Collections.Generic;
 
 namespace Business.Concrete
 {
@@ -34,7 +36,7 @@ namespace Business.Concrete
         public IResult Add(Survey survey)
         {
             _surveyDal.Add(survey);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
         }
         
         //[SecuredOperation("admin")]
@@ -48,13 +50,13 @@ namespace Business.Concrete
         public IResult Delete(Survey survey)
         {
             _surveyDal.Delete(survey);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Deleted);
         }
         [CacheRemoveAspect("ISurveyService.Get")]
         public IResult Update(Survey survey)
         {
            _surveyDal.Update(survey);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Updated);
         }
         public IDataResult<Survey> GetById(string id)
         {
@@ -73,31 +75,33 @@ namespace Business.Concrete
 
         }
 
-        public IDataResult<List<UserForWhoWatchedAds>> GetAllUsersWhoSolvedSurveyBySurveyId(string surveyId)
+        public IDataResult<List<UserForWatchedOrSolvedContent>> GetAllUsersWhoSolvedSurveyBySurveyId(string surveyId)
         {
             var survey = GetById(surveyId);
             if (!survey.Success)
             {
-                return new ErrorDataResult<List<UserForWhoWatchedAds>>();
+                return new ErrorDataResult<List<UserForWatchedOrSolvedContent>>();
             }
             var solvedSurveys = _solvedSurveyService.GetAll().Data;
-            List<UserForWhoWatchedAds> result = new List<UserForWhoWatchedAds>();
+            List<UserForWatchedOrSolvedContent> result = new List<UserForWatchedOrSolvedContent>();
             foreach (var solvedSurvey in solvedSurveys)
             {
                 if (survey.Data.Id == solvedSurvey.SurveyId)
                 {
                     User user = _userService.GetById(solvedSurvey.UserId).Data;
-                    UserForWhoWatchedAds userForWhoWatchedAds = new UserForWhoWatchedAds
+                    UserForWatchedOrSolvedContent userForWhoWatchedAds = new UserForWatchedOrSolvedContent
                     {
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        Age = DateTime.Now.Year - user.BirthDay.Year,
+                        Gender = user.GenderId == 1 ? "Men": "Women"
                     };
                     result.Add(userForWhoWatchedAds);
                 }
             }
 
-            return new SuccessDataResult<List<UserForWhoWatchedAds>>(result);
+            return new SuccessDataResult<List<UserForWatchedOrSolvedContent>>(result);
         }
 
         public IDataResult<List<Survey>> GetAllSurveysByOwnerUserId(int userId)
@@ -129,5 +133,7 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<Survey>>(surveys.Except(inValidSurveys).ToList());
         }
+
+        
     }
 }

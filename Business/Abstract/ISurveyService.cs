@@ -18,7 +18,7 @@ namespace Business.Abstract
         IDataResult<Survey> GetById(string id);
         IDataResult<List<Survey>> GetAll();
         IDataResult<List<Survey>> GetAllFilteredSurveyByUserId(int userId);
-        IDataResult<List<UserForWhoWatchedAds>> GetAllUsersWhoSolvedSurveyBySurveyId(string surveyId);
+        IDataResult<List<UserForWatchedOrSolvedContent>> GetAllUsersWhoSolvedSurveyBySurveyId(string surveyId);
         IDataResult<List<Survey>> GetAllSurveysByOwnerUserId(int userId);
         IDataResult<List<Survey>> GetAllUnsolvedSurvey(int userId);
     }

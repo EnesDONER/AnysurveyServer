@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
@@ -29,7 +30,7 @@ namespace Business.Concrete
         public IResult Add(User user)
         {
             _userDal.Add(user);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
         }
 
         public User GetByMail(string email)
@@ -47,7 +48,7 @@ namespace Business.Concrete
         public IResult Update(User user)
         {
             _userDal.Update(user);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Updated);
         }
     }
 }

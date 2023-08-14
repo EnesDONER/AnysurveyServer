@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Business.Abstract;
 using Business.BusinessAspects.Autofac;
+using Business.Constants;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
@@ -37,7 +38,7 @@ namespace Business.Concrete
         public IResult Add(Ad ad)
         {
             _addDal.Add(ad);
-            return new SuccessResult();
+            return new SuccessResult(Messages.Added);
 
         }
         public IDataResult<List<Ad>> GetAllFilteredAdByUserId(int userId)
@@ -52,31 +53,34 @@ namespace Business.Concrete
 
         }
         [CacheAspect(10)]
-        public IDataResult<List<UserForWhoWatchedAds>> GetAllUsersWhoWatchedAdsByAdId(string adId)
+        public IDataResult<List<UserForWatchedOrSolvedContent>> GetAllUsersWhoWatchedAdsByAdId(string adId)
         {
             var ad = GetById(adId);
             if (!ad.Success)
             {
-                return new ErrorDataResult<List<UserForWhoWatchedAds>>();
+                return new ErrorDataResult<List<UserForWatchedOrSolvedContent>>("Ad not found");
             }
             var watchedAds = _watchedAdService.GetAll().Data;
-            List<UserForWhoWatchedAds> result = new List<UserForWhoWatchedAds>();
+            List<UserForWatchedOrSolvedContent> result = new List<UserForWatchedOrSolvedContent>();
             foreach (var watchedAd in watchedAds)
             {
                 if (ad.Data.Id == watchedAd.AdId)
                 {
                     User user = _userService.GetById(watchedAd.UserId).Data;
-                    UserForWhoWatchedAds userForWhoWatchedAds = new UserForWhoWatchedAds
+                    UserForWatchedOrSolvedContent userForWhoWatchedAds = new UserForWatchedOrSolvedContent
                     {
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        Age = DateTime.Now.Year - user.BirthDay.Year,
+                        Gender = user.GenderId == 1 ? "Men" : "Women"
+                        
                     };
                     result.Add(userForWhoWatchedAds);
                 }
             }
 
-            return new SuccessDataResult<List<UserForWhoWatchedAds>>(result);
+            return new SuccessDataResult<List<UserForWatchedOrSolvedContent>>(result);
         }
 
         [CacheAspect(10)]
