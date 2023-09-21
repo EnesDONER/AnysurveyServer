@@ -11,5 +11,6 @@
         public static string Error = "Error";
 
         public static string Deleted = "successfully deleted";
+        public static string RequestNull = "The request was null";
     }
 }

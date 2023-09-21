@@ -2,6 +2,7 @@
 using Business.Abstract;
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
+using Business.ThirdPartyServices.MessageBrokerServices;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
@@ -15,23 +16,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZstdSharp.Unsafe;
 
 namespace Business.Concrete
 {
     public class AdManager : IAdService
     {
         private readonly IAdDal _addDal;
-        private readonly IWatchedAdService _watchedAdService;
+
         private readonly IAdFilterService _adFilterService;
         private readonly IUserService _userService;
-
-        public AdManager(IAdDal addDal, IWatchedAdService watchedAdService, IAdFilterService adFilterService, IUserService userService)
+        private readonly IWatchedAdDal _watchedAdDal;
+        private readonly IMessageBrokerService<EmailDto> _messageBrokerService;
+        public AdManager(IAdDal addDal, IWatchedAdDal watchedAdDal, IAdFilterService adFilterService, IUserService userService, IMessageBrokerService<EmailDto> messageBrokerService)
         {
             _addDal = addDal;
-            _watchedAdService = watchedAdService;
+            _watchedAdDal = watchedAdDal;
             _adFilterService = adFilterService;
             _userService = userService;
+            _messageBrokerService = messageBrokerService;
         }
+
 
         [CacheRemoveAspect("IAdService.Get")]
         [SecuredOperation("partnership")]
@@ -60,7 +65,7 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<UserForWatchedOrSolvedContent>>("Ad not found");
             }
-            var watchedAds = _watchedAdService.GetAll().Data;
+            var watchedAds = GetAllWatchedAd().Data;
             List<UserForWatchedOrSolvedContent> result = new List<UserForWatchedOrSolvedContent>();
             foreach (var watchedAd in watchedAds)
             {
@@ -86,7 +91,7 @@ namespace Business.Concrete
         [CacheAspect(10)]
         public IDataResult<List<Ad>> GetAllUnWatchedAd(int userId)
         {
-            return new SuccessDataResult<List<Ad>>(GetAllFilteredAdByUserId(userId).Data.Where(ad => !_watchedAdService.GetAllByUserId(userId).Data.Any(watchedAd => watchedAd.AdId == ad.Id)).ToList());
+            return new SuccessDataResult<List<Ad>>(GetAllFilteredAdByUserId(userId).Data.Where(ad => !GetAllWatchedAdByUserId(userId).Data.Any(watchedAd => watchedAd.AdId == ad.Id)).ToList());
         }
         [CacheAspect(10)]
         public IDataResult<List<Ad>> GetAllAdsByOwnerUserId(int userId)
@@ -119,5 +124,52 @@ namespace Business.Concrete
             } 
             return new SuccessDataResult<List<Ad>>(ads.Except(inValidAds).ToList());
         }
+
+        [CacheRemoveAspect("IWatcedAdService.Get")]
+        [CacheRemoveAspect("IUserService.Get")]
+        public IResult AddWatchedAd(WatchedAd watcehedAd)
+        {
+            _watchedAdDal.Add(watcehedAd);
+
+
+            var senderUser = _userService.GetById(watcehedAd.UserId).Data; // reklamı izleyen kişi
+            var addedAd = GetById(watcehedAd.AdId).Data; 
+            var ownerUser = addedAd.OwnerUserId; //reklamın sahibi
+            var senderUserName = senderUser.FirstName + senderUser.LastName;
+
+            EmailDto email = new()
+            {
+                ConsumerUserEmail = _userService.GetById(ownerUser).Data.Email,
+                Body = $" {senderUserName} watched your \"{addedAd.Description}\" video",
+                Subject = "Your Ad video Watched"
+            };
+
+            try
+            {
+                _messageBrokerService.AddQuee(queueName: "Email", email);
+
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("RabbitMQ connecting is failed");
+            }
+
+            return new SuccessResult(Messages.Added);
+        }
+
+        [CacheRemoveAspect("IWatcedAdService.Get")]
+        public IDataResult<List<WatchedAd>> GetAllWatchedAd()
+        {
+            return new SuccessDataResult<List<WatchedAd>>(_watchedAdDal.GetAll());
+        }
+
+        [CacheRemoveAspect("IWatcedAdService.Get")]
+        public IDataResult<List<WatchedAd>> GetAllWatchedAdByUserId(int userId)
+        {
+            return new SuccessDataResult<List<WatchedAd>>(_watchedAdDal.GetAll(wa => wa.UserId == userId));
+
+        }
+
     }
 }

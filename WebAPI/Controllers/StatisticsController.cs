@@ -12,14 +12,11 @@ namespace WebAPI.Controllers
     [ApiController]
     public class StatisticsController : ControllerBase
     {
-        private readonly IWatchedAdService _watchedAdService;
         private readonly IAdService _adService;
         private readonly ISurveyService _surveyService;
         private readonly ISolvedSurveyService _solvedSurveyService;
-        public StatisticsController(IWatchedAdService watchedAdService,IAdService adService,ISurveyService surveyService,ISolvedSurveyService solvedSurveyService)
+        public StatisticsController(IAdService adService,ISurveyService surveyService,ISolvedSurveyService solvedSurveyService)
         {
-            _watchedAdService = watchedAdService;
-
             _adService = adService;
             _surveyService = surveyService;
             _solvedSurveyService = solvedSurveyService;
@@ -84,7 +81,7 @@ namespace WebAPI.Controllers
         [HttpGet("getallbyuseridwatchedad")]
         public IActionResult GetAllByUserIdWatchedAd(int userId)
         {
-            var result = _watchedAdService.GetAllByUserId(userId);
+            var result = _adService.GetAllWatchedAdByUserId(userId);
             if (result.Success)
             {
                 return Ok(result);
@@ -110,7 +107,7 @@ namespace WebAPI.Controllers
         public IActionResult AddWatchedAd(WatchedAd watchedAd)
         {
 
-            var result = _watchedAdService.Add(watchedAd);
+            var result = _adService.AddWatchedAd(watchedAd);
 
             if (result.Success)
             {

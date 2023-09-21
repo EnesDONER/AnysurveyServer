@@ -24,6 +24,9 @@ using Core.CrossCuttingConcerns.Caching;
 using Microsoft.Extensions.DependencyInjection;
 using Business.ThirdPartyServices.PaymentServices;
 using Business.ThirdPartyServices.PaymentServices.IyziPay;
+using Business.ThirdPartyServices.MessageBrokerServices;
+using Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ;
+using Entities.Dtos;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -69,6 +72,8 @@ namespace Business.DependencyResolvers.Autofac
 
             //services
             builder.RegisterType<IyzipayAdapter>().As<IThirdPartyPaymentService>().SingleInstance();
+
+            builder.RegisterType<RabbitMQAdapter<EmailDto>>().As<IMessageBrokerService< EmailDto >> ().SingleInstance();
 
             builder.RegisterType<ContactManager>().As<IContactService>().SingleInstance();
 

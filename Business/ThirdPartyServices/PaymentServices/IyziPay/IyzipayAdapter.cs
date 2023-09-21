@@ -1,4 +1,5 @@
-﻿using Core.Entities.Concrete;
+﻿using Business.Constants;
+using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using Entities.Concrete;
 using Iyzipay;
@@ -18,6 +19,10 @@ namespace Business.ThirdPartyServices.PaymentServices.IyziPay
         public IResult Pay(User user, Card card, decimal amount)
         {
             CreatePaymentRequest request = new CreatePaymentRequest();
+            if (request==null)
+            {
+                return new ErrorResult(Messages.RequestNull);
+            }
             request.Locale = Locale.EN.ToString();
             request.ConversationId = "123456789";
             request.Price = amount.ToString();
