@@ -14,19 +14,18 @@ namespace WebAPI.Controllers
     {
         private readonly IAdService _adService;
         private readonly ISurveyService _surveyService;
-        private readonly ISolvedSurveyService _solvedSurveyService;
-        public StatisticsController(IAdService adService,ISurveyService surveyService,ISolvedSurveyService solvedSurveyService)
+        public StatisticsController(IAdService adService,ISurveyService surveyService)
         {
             _adService = adService;
             _surveyService = surveyService;
-            _solvedSurveyService = solvedSurveyService;
+
         }
 
         //anket idsine göre çözülmüş anketleri listele
         [HttpGet("getallbysurveyidsolvedsurvey")]
         public IActionResult GetAllSolvedSurveyBySurveyId(string surveyId)
         {
-            var result = _solvedSurveyService.GetAllBySurveyId(surveyId);
+            var result = _surveyService.GetAllSolvedSurveyBySurveyId(surveyId);
             if (result.Success)
             {
                 return Ok(result);
@@ -39,7 +38,7 @@ namespace WebAPI.Controllers
         [HttpGet("getallsurveystatistics")]
         public IActionResult GetAllSurveyStatistics(string id)
         {
-            var result = _solvedSurveyService.GetAllSolvedSurveyStatisticsBySurveyId(id);
+            var result = _surveyService.GetAllSolvedSurveyStatisticsBySurveyId(id);
 
             if (result.Success)
             {
@@ -67,7 +66,7 @@ namespace WebAPI.Controllers
         public IActionResult AddSolvedSurvey(SolvedSurvey solvedSurvey)
         {
        
-            var result = _solvedSurveyService.Add(solvedSurvey);
+            var result = _surveyService.AddSolvedSurvey(solvedSurvey);
 
             if (result.Success)
             {

@@ -21,5 +21,12 @@ namespace Business.Abstract
         IDataResult<List<UserForWatchedOrSolvedContent>> GetAllUsersWhoSolvedSurveyBySurveyId(string surveyId);
         IDataResult<List<Survey>> GetAllSurveysByOwnerUserId(int userId);
         IDataResult<List<Survey>> GetAllUnsolvedSurvey(int userId);
+
+
+        IResult AddSolvedSurvey(SolvedSurvey solvedSurvey);
+        IDataResult<List<SolvedSurvey>> GetAllSolvedSurvey();
+        IDataResult<List<SolvedSurvey>> GetAllSolvedSurveyByUserId(int userId);
+        IDataResult<List<SolvedSurvey>> GetAllSolvedSurveyBySurveyId(string surveyId);
+        IDataResult<List<SurveyStatistic>> GetAllSolvedSurveyStatisticsBySurveyId(string surveyId);
     }
 }

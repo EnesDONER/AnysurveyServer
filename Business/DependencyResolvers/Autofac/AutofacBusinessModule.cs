@@ -40,13 +40,11 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<SurveyManager>().As<ISurveyService>().SingleInstance();
 
             builder.RegisterType<MSolvedSurveyDal>().As<ISolvedSurveyDal>().SingleInstance();
-            builder.RegisterType<SolvedSurveyManager>().As<ISolvedSurveyService>().SingleInstance();
 
             builder.RegisterType<MSurveyFilterDal>().As<ISurveyFilterDal>().SingleInstance();
             builder.RegisterType<SurveyFilterManager>().As<ISurveyFilterService>().SingleInstance();
 
             builder.RegisterType<MWatchedAdDal>().As<IWatchedAdDal>().SingleInstance();
-            builder.RegisterType<WatchedAdManager>().As<IWatchedAdService>().SingleInstance();
 
             builder.RegisterType<MAdDal>().As<IAdDal>().SingleInstance();
             builder.RegisterType<AdManager>().As<IAdService>().SingleInstance();

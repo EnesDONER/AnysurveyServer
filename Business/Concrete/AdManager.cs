@@ -5,6 +5,7 @@ using Business.Constants;
 using Business.ThirdPartyServices.MessageBrokerServices;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.MongoDB;
@@ -129,11 +130,19 @@ namespace Business.Concrete
         [CacheRemoveAspect("IUserService.Get")]
         public IResult AddWatchedAd(WatchedAd watcehedAd)
         {
-            _watchedAdDal.Add(watcehedAd);
+            IResult result = sendMessageRabbitMQ(watcehedAd);
+            if (!result.Success)
+            {
+                return new ErrorResult(result.Message);
+            }
 
+            return new SuccessResult(Messages.Added);
+        }
 
+        private IResult sendMessageRabbitMQ(WatchedAd watcehedAd)
+        {
             var senderUser = _userService.GetById(watcehedAd.UserId).Data; // reklamı izleyen kişi
-            var addedAd = GetById(watcehedAd.AdId).Data; 
+            var addedAd = GetById(watcehedAd.AdId).Data;
             var ownerUser = addedAd.OwnerUserId; //reklamın sahibi
             var senderUserName = senderUser.FirstName + senderUser.LastName;
 
@@ -152,10 +161,9 @@ namespace Business.Concrete
             catch (Exception)
             {
 
-                throw new Exception("RabbitMQ connecting is failed");
+                return new ErrorResult("RabbitMQ connecting is failed");
             }
-
-            return new SuccessResult(Messages.Added);
+            return new SuccessResult("Message sended");
         }
 
         [CacheRemoveAspect("IWatcedAdService.Get")]
