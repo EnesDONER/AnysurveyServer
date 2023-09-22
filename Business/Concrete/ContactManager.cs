@@ -8,29 +8,53 @@ using System.Net.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Business.ThirdPartyServices.MessageBrokerServices;
+using Entities.Concrete;
+using MongoDB.Bson;
 
 namespace Business.Concrete
 {
     public class ContactManager : IContactService
     {
+        private readonly IMessageBrokerService<EmailDto> _messageBrokerService;
+
+        public ContactManager(IMessageBrokerService<EmailDto> messageBrokerService)
+        {
+            _messageBrokerService = messageBrokerService;
+        }
+
         public IResult SendMessage(Contact contact)
         {
-            using (MailMessage mail = new MailMessage())
+            IResult result = sendMessageRabbitMQ(contact);
+            if (!result.Success)
             {
-                mail.From = new MailAddress("seenbilgi@outlook.com");
-                mail.To.Add("seenbilgi@outlook.com");
-                mail.Subject = contact.Subject;
-                mail.Body = "His mail: "+contact.Email+ " \n His name: " + contact.Name + "\n His message: " +contact.Message;
-                mail.IsBodyHtml = true;
-
-                using (SmtpClient smtp = new SmtpClient("smtp.office365.com", 587))
-                {
-                    smtp.Credentials = new NetworkCredential("seenbilgi@outlook.com", "123456789seen");
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
-                }
+                return new ErrorResult(result.Message);
             }
-            return new SuccessResult("Mail sended");
+
+            return new SuccessResult(result.Message);
+        }
+
+        private IResult sendMessageRabbitMQ(Contact contact)
+        {
+
+            EmailDto email = new()
+            {
+                ConsumerUserEmail = "seenbilgi@outlook.com",
+                Body = "His mail: " + contact.Email + " \n His name: " + contact.Name + "\n His message: " + contact.Message,
+                Subject = contact.Subject
+            };
+
+            try
+            {
+                _messageBrokerService.AddQuee(queueName: "Email", email);
+
+            }
+            catch (Exception)
+            {
+
+                return new ErrorResult("RabbitMQ connecting is failed");
+            }
+            return new SuccessResult("Message sended");
         }
     }
 }

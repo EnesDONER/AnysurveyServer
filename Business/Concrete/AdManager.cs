@@ -130,6 +130,8 @@ namespace Business.Concrete
         [CacheRemoveAspect("IUserService.Get")]
         public IResult AddWatchedAd(WatchedAd watcehedAd)
         {
+            _watchedAdDal.Add(watcehedAd);
+
             IResult result = sendMessageRabbitMQ(watcehedAd);
             if (!result.Success)
             {
