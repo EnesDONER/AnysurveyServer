@@ -15,12 +15,23 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using Microsoft.Extensions.DependencyInjection;
+using Business.DependencyResolvers;
+using Business.ThirdPartyServices.StorageServices.Local;
+using Business.ThirdPartyServices.StorageServices.Azure;
+using Business.ThirdPartyServices.StorageServices;
+using Business.ThirdPartyServices.MessageBrokerServices;
+using Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ;
+using Entities.Dtos;
+using Business.ThirdPartyServices.PaymentServices.PayPal;
+using Business.ThirdPartyServices.MessageBrokerServices.NewFolder;
+using Business.ThirdPartyServices.PaymentServices.IyziPay;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -60,6 +71,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddMemoryCache();
 
 
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Services.AddDependencyResolvers(new ICoreModule[] {
@@ -67,10 +79,11 @@ builder.Services.AddDependencyResolvers(new ICoreModule[] {
 });
 
 
-builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
+//builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
 
-
-
+builder.Services.Load();
+builder.Services.AddStorage<AzureStorageAdapter>();
+builder.Services.AddPaymentService<IyzipayAdapter>();
 
 var app = builder.Build();
 

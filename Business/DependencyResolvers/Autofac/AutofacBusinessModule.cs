@@ -27,11 +27,17 @@ using Business.ThirdPartyServices.PaymentServices.IyziPay;
 using Business.ThirdPartyServices.MessageBrokerServices;
 using Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ;
 using Entities.Dtos;
+using Business.ThirdPartyServices.StorageServices;
+using Business.ThirdPartyServices.StorageServices.Local;
+using Autofac.Core;
+using Business.ThirdPartyServices.PaymentServices.PayPal;
+using Business.ThirdPartyServices.MessageBrokerServices.NewFolder;
 
 namespace Business.DependencyResolvers.Autofac
 {
     public class AutofacBusinessModule : Module
     {
+       
         protected override void Load(ContainerBuilder builder)
         {
             //Mongo
@@ -69,11 +75,15 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 
             //services
-            builder.RegisterType<IyzipayAdapter>().As<IThirdPartyPaymentService>().SingleInstance();
-
-            builder.RegisterType<RabbitMQAdapter<EmailDto>>().As<IMessageBrokerService< EmailDto >> ().SingleInstance();
+            builder.RegisterGeneric(typeof(RabbitMQAdapter<>)).As(typeof(IMessageBrokerService<>)).InstancePerDependency();
+           // builder.RegisterType<Deneme<EmailDto>>().As<IMessageBrokerService< EmailDto >> ().InstancePerLifetimeScope();
 
             builder.RegisterType<ContactManager>().As<IContactService>().SingleInstance();
+           
+            builder.RegisterType<LocalStorage>().As<IStorageService>().InstancePerLifetimeScope();
+            builder.RegisterType<PaypalAdapter>().As<IThirdPartyPaymentService>().InstancePerDependency();
+
+
 
 
             var assembly = Assembly.GetExecutingAssembly();
@@ -84,5 +94,6 @@ namespace Business.DependencyResolvers.Autofac
                     Selector = new AspectInterceptorSelector()
                 }).SingleInstance();
         }
+
     }
 }

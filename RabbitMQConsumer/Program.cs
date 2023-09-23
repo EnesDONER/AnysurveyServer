@@ -5,7 +5,7 @@ using RabbitMQ.Client.Events;
 using System.Net.Mail;
 using System.Net;
 using System.Text;
-
+using Core.Utilities.Results;
 
 try
 {
@@ -82,6 +82,7 @@ try
 catch (Exception ex)
 {
 
-    throw ex;
+   new ErrorResult(ex.Message);
 }
+
 

@@ -1,6 +1,7 @@
 ﻿using Core.Utilities.Results;
 using Entities.Concrete;
 using Entities.Dtos;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -22,5 +23,9 @@ namespace Business.Abstract
         IResult AddWatchedAd(WatchedAd watcehedAd);
         IDataResult<List<WatchedAd>> GetAllWatchedAd();
         IDataResult<List<WatchedAd>> GetAllWatchedAdByUserId(int userId);
+
+
+        Task<List<FileUploadResponseDto>> Upload(string containerName,string id, IFormFileCollection files);
+
     }
 }

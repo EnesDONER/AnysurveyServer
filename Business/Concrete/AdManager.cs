@@ -3,6 +3,8 @@ using Business.Abstract;
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ThirdPartyServices.MessageBrokerServices;
+using Business.ThirdPartyServices.PaymentServices;
+using Business.ThirdPartyServices.StorageServices;
 using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
@@ -11,6 +13,7 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.MongoDB;
 using Entities.Concrete;
 using Entities.Dtos;
+using Microsoft.AspNetCore.Http;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -24,18 +27,19 @@ namespace Business.Concrete
     public class AdManager : IAdService
     {
         private readonly IAdDal _addDal;
-
         private readonly IAdFilterService _adFilterService;
         private readonly IUserService _userService;
         private readonly IWatchedAdDal _watchedAdDal;
         private readonly IMessageBrokerService<EmailDto> _messageBrokerService;
-        public AdManager(IAdDal addDal, IWatchedAdDal watchedAdDal, IAdFilterService adFilterService, IUserService userService, IMessageBrokerService<EmailDto> messageBrokerService)
+        private  IStorageService _storageService;
+        public AdManager(IAdDal addDal, IWatchedAdDal watchedAdDal, IAdFilterService adFilterService, IUserService userService, IMessageBrokerService<EmailDto> messageBrokerService, IStorageService storageService)
         {
             _addDal = addDal;
             _watchedAdDal = watchedAdDal;
             _adFilterService = adFilterService;
             _userService = userService;
             _messageBrokerService = messageBrokerService;
+            _storageService = storageService;
         }
 
 
@@ -181,5 +185,10 @@ namespace Business.Concrete
 
         }
 
+        public async Task<List<FileUploadResponseDto>> Upload(string containerName, string id, IFormFileCollection files)
+        {
+            var result=  await _storageService.UploadAsync(containerName,id, files);
+            return result;
+        }
     }
 }

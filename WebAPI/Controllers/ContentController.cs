@@ -59,6 +59,21 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
+
+
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(string containerName,string id, IFormFileCollection files)
+        {
+            var result = await _addService.Upload(containerName,id, files);
+
+            return Ok(result);
+        }
+
+
+
+
+
         //kişinin eklediği anketleri listeler
         [HttpGet("getallsurveysbyowneruserid")]
         public IActionResult GetAllSurveysByOwnerUserId(int userId)

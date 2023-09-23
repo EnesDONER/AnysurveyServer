@@ -16,13 +16,10 @@ namespace WebAPI.Controllers
     {
         private readonly ICardService _cardService;
         private readonly IPaymentService _paymentService;
-        private readonly IUserService _userService;
-        public PaymentController(ICardService cardService,IPaymentService paymentService,IUserService userService)
+        public PaymentController(ICardService cardService,IPaymentService paymentService)
         {
             _cardService = cardService;
             _paymentService = paymentService;
-            _userService = userService;
-
 
         }
         [HttpPost("addcard")]

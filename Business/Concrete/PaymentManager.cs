@@ -7,9 +7,9 @@ namespace Business.Concrete
 {
     public class PaymentManager : IPaymentService
     {
-        IUserService _userService;
-        ICardService _cardService;
-        IThirdPartyPaymentService _thirdPartyPaymentService;
+        private readonly IUserService _userService;
+        private readonly ICardService _cardService;
+        private readonly IThirdPartyPaymentService  _thirdPartyPaymentService;
         public PaymentManager(IUserService userService, ICardService cardService,IThirdPartyPaymentService thirdPartyPaymentService)
         {
             _cardService=cardService;
@@ -31,7 +31,7 @@ namespace Business.Concrete
                 return new ErrorResult(result.Message);
 
 
-            return new SuccessDataResult<string>("Payment success");
+            return new SuccessResult(result.Message);
         }
 
     }

@@ -49,10 +49,10 @@ namespace Business.Concrete
                 _messageBrokerService.AddQuee(queueName: "Email", email);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return new ErrorResult("RabbitMQ connecting is failed");
+                return new ErrorResult(ex.Message);
             }
             return new SuccessResult("Message sended");
         }
