@@ -1,3 +1,4 @@
+using Business.ThirdPartyServices.PaymentServices.PayPal;
 using Autofac;
 using Autofac.Core;
 using Microsoft.Extensions.Configuration;
@@ -23,15 +24,22 @@ using Business.ThirdPartyServices.StorageServices;
 using Business.ThirdPartyServices.MessageBrokerServices;
 using Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ;
 using Entities.Dtos;
-using Business.ThirdPartyServices.PaymentServices.PayPal;
 using Business.ThirdPartyServices.MessageBrokerServices.NewFolder;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Castle.DynamicProxy;
+using Core.Utilities.Interceptors;
+using System.Reflection;
 using Business.ThirdPartyServices.PaymentServices.IyziPay;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 100000000; // 100 MB
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -68,22 +76,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
         };
     });
-builder.Services.AddMemoryCache();
 
 
-
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Services.AddDependencyResolvers(new ICoreModule[] {
     new CoreModule()
 });
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).ConfigureContainer<ContainerBuilder>(builder =>
+{
+    builder.RegisterModule(new AutofacBusinessModule());
+});
 
 
+builder.Services.AddMemoryCache();
 //builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
 
-builder.Services.Load();
-builder.Services.AddStorage<AzureStorageAdapter>();
-builder.Services.AddPaymentService<IyzipayAdapter>();
+
+//builder.Services.LoadCore();
+//builder.Services.Load();
+//builder.Services.AddStorage<LocalStorage>();
+//builder.Services.AddPaymentService<IyzipayAdapter>();
+
+
 
 var app = builder.Build();
 
@@ -98,11 +112,18 @@ app.UseCors();
 
 app.UseRouting();
 
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseAuthentication();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
 
 app.MapControllers();
 

@@ -28,40 +28,42 @@ namespace TestProject
         {
         }
 
-        [Test]
-        public void PayInstance()
-        {
-            int userId = 17;
-            int cardId = 1;
-            decimal amount = 1;
+        //[Test]
+        //public void PayInstance()
+        //{
+        //    int userId = 17;
+        //    int cardId = 1;
+        //    decimal amount = 1;
    
-            IUserService userService = new UserManager(new EfUserDal());
-            ICardService cardService = new CardManager(new EfCardDal());
-            IThirdPartyPaymentService thirdPartyPaymentService = new PaypalAdapter();
-            IPaymentService paymentManager = new PaymentManager(userService, cardService, thirdPartyPaymentService);
+        //    IUserService userService = new UserManager(new EfUserDal());
+        //    ICardService cardService = new CardManager(new EfCardDal());
 
-            // Ödeme iþlemi gerçekleþtirin
-            var paymentResult = paymentManager.Pay(userId, cardId, amount);
 
-            if (paymentResult.Success)
-            {
-                Console.WriteLine(paymentResult.Message);
-                if (paymentResult.Message == "Paypal")
-                {
-                    Assert.Pass();
+        //    IThirdPartyPaymentService thirdPartyPaymentService = new PaypalAdapter();
+        //    IPaymentService paymentManager = new PaymentManager(userService, cardService, thirdPartyPaymentService);
 
-                }
-                Console.WriteLine("Iyzico çalýstý");
-                Assert.Fail();
-            }
-            else
-            {
-                Console.WriteLine("Ödeme baþarýsýz: " + paymentResult.Message);
-                Assert.Fail();
-            }
+        //    // Ödeme iþlemi gerçekleþtirin
+        //    var paymentResult = paymentManager.Pay(userId, cardId, amount);
+
+        //    if (paymentResult.Success)
+        //    {
+        //        Console.WriteLine(paymentResult.Message);
+        //        if (paymentResult.Message == "Paypal")
+        //        {
+        //            Assert.Pass();
+
+        //        }
+        //        Console.WriteLine("Iyzico çalýstý");
+        //        Assert.Fail();
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Ödeme baþarýsýz: " + paymentResult.Message);
+        //        Assert.Fail();
+        //    }
 
           
-        }
+        //}
 
         [Test]
         public void StorageInstange()

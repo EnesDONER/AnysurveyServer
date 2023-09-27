@@ -32,6 +32,7 @@ using Business.ThirdPartyServices.StorageServices.Local;
 using Autofac.Core;
 using Business.ThirdPartyServices.PaymentServices.PayPal;
 using Business.ThirdPartyServices.MessageBrokerServices.NewFolder;
+using Business.ThirdPartyServices.StorageServices.Azure;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -58,8 +59,6 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<MAdFilterDal>().As<IAdFilterDal>().SingleInstance();
             builder.RegisterType<AdFilterManager>().As<IAdFilterService>().SingleInstance();
 
-            //builder.RegisterType<MongoEntityRepositoryBase<Survey>>().As<IEntityRepository<Survey>>().SingleInstance();
-
             //MSql
 
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
@@ -75,15 +74,10 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 
             //services
-            builder.RegisterGeneric(typeof(RabbitMQAdapter<>)).As(typeof(IMessageBrokerService<>)).InstancePerDependency();
-           // builder.RegisterType<Deneme<EmailDto>>().As<IMessageBrokerService< EmailDto >> ().InstancePerLifetimeScope();
+
+            builder.RegisterType<PaymentManager>().As<IPaymentService>().SingleInstance();
 
             builder.RegisterType<ContactManager>().As<IContactService>().SingleInstance();
-           
-            builder.RegisterType<LocalStorage>().As<IStorageService>().InstancePerLifetimeScope();
-            builder.RegisterType<PaypalAdapter>().As<IThirdPartyPaymentService>().InstancePerDependency();
-
-
 
 
             var assembly = Assembly.GetExecutingAssembly();
@@ -93,6 +87,14 @@ namespace Business.DependencyResolvers.Autofac
                 {
                     Selector = new AspectInterceptorSelector()
                 }).SingleInstance();
+
+            //Third Party Services
+
+            builder.RegisterGeneric(typeof(RabbitMQAdapter<>)).As(typeof(IMessageBrokerService<>)).InstancePerDependency();
+
+            builder.RegisterType<AzureStorageAdapter>().As<IStorageService>().SingleInstance();
+
+            builder.RegisterType<IyzipayAdapter>().As<IThirdPartyPaymentService>().SingleInstance();
         }
 
     }

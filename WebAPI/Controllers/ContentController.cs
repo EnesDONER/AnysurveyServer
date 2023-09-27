@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Utilities.IoC;
 using Entities.Concrete;
+using Entities.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Security.Claims;
@@ -70,6 +71,28 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("getallfile")]
+        public IActionResult GetAllFile(string containerName)
+        {
+            var result = _addService.GetAllFile(containerName);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("hasfile")]
+        public IActionResult HasFile(string containerName,string fileName)
+        {
+            var result = _addService.HasFile(containerName,fileName);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
 
 
 
@@ -132,6 +155,18 @@ namespace WebAPI.Controllers
         {
      
             var result = _addService.Add(ad);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("addadandupload")]
+        public async Task<IActionResult> AddAdandUploadAsync([FromForm] AdUploadDto adUploadDto)
+        {
+
+            var result = await _addService.AddAdandUploadAsync(adUploadDto);
             if (result.Success)
             {
                 return Ok(result);

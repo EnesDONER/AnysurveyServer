@@ -14,12 +14,13 @@ using Card = Entities.Concrete.Card;
 
 namespace Business.ThirdPartyServices.PaymentServices.IyziPay
 {
-    public class IyzipayAdapter:IThirdPartyPaymentService
+    public class IyzipayAdapter : IThirdPartyPaymentService
     {
+
         public IResult Pay(User user, Card card, decimal amount)
         {
             CreatePaymentRequest request = new CreatePaymentRequest();
-            if (request==null)
+            if (request == null)
             {
                 return new ErrorResult(Messages.RequestNull);
             }
@@ -77,11 +78,11 @@ namespace Business.ThirdPartyServices.PaymentServices.IyziPay
             options.SecretKey = "sandbox-9ECYbcJwyGV5RIzqiPf00hSC8PdRoflA";
             options.BaseUrl = "https://sandbox-api.iyzipay.com";
             Payment payment = Payment.Create(request, options);
-            if (payment.ErrorMessage != null)
+            if (!string.IsNullOrEmpty(payment.ErrorMessage))
             {
                 return new ErrorResult(payment.ErrorMessage);
             }
-            return new SuccessResult();
+            return new SuccessResult("Payment success");
 
         }
     }

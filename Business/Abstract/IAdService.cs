@@ -13,7 +13,8 @@ namespace Business.Abstract
 {
     public interface IAdService
     {
-        IResult Add(Ad ad);   
+        IResult Add(Ad ad);
+        Task<IResult> AddAdandUploadAsync(AdUploadDto adUploadDto);
         IDataResult<List<Ad>> GetAllFilteredAdByUserId(int userId);
         IDataResult<Ad> GetById(string id);
         IDataResult<List<UserForWatchedOrSolvedContent>> GetAllUsersWhoWatchedAdsByAdId(string adId);
@@ -26,6 +27,8 @@ namespace Business.Abstract
 
 
         Task<List<FileUploadResponseDto>> Upload(string containerName,string id, IFormFileCollection files);
+        IDataResult<List<string>> GetAllFile(string containerName);
+        IResult HasFile(string containerName, string fileName);
 
     }
 }

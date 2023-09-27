@@ -81,8 +81,8 @@ try
 }
 catch (Exception ex)
 {
-
-   new ErrorResult(ex.Message);
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine(ex.ToString());
 }
 
 
