@@ -3,6 +3,8 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ThirdPartyServices.MessageBrokerServices;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
 using Core.Entities;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
@@ -41,7 +43,7 @@ namespace Business.Concrete
             _surveyDal.Add(survey);
             return new SuccessResult(Messages.Added);
         }
-        
+
         //[SecuredOperation("admin")]
         //[CacheAspect(duration: 10)]
         public IDataResult<List<Survey>> GetAll()

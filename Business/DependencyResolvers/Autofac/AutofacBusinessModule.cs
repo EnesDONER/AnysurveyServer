@@ -28,10 +28,7 @@ using Business.ThirdPartyServices.MessageBrokerServices;
 using Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ;
 using Entities.Dtos;
 using Business.ThirdPartyServices.StorageServices;
-using Business.ThirdPartyServices.StorageServices.Local;
 using Autofac.Core;
-using Business.ThirdPartyServices.PaymentServices.PayPal;
-using Business.ThirdPartyServices.MessageBrokerServices.NewFolder;
 using Business.ThirdPartyServices.StorageServices.Azure;
 
 namespace Business.DependencyResolvers.Autofac

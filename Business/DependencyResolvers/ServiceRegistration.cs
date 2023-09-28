@@ -2,10 +2,8 @@
 using Business.Concrete;
 using Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ;
 using Business.ThirdPartyServices.MessageBrokerServices;
-using Business.ThirdPartyServices.PaymentServices.PayPal;
 using Business.ThirdPartyServices.PaymentServices;
 using Business.ThirdPartyServices.StorageServices;
-using Business.ThirdPartyServices.StorageServices.Local;
 using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
@@ -17,7 +15,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
-using Business.ThirdPartyServices.MessageBrokerServices.NewFolder;
 using Entities.Dtos;
 using Core.CrossCuttingConcerns.Caching.Microsoft;
 using Core.CrossCuttingConcerns.Caching;

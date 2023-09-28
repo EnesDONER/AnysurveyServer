@@ -1,4 +1,3 @@
-using Business.ThirdPartyServices.PaymentServices.PayPal;
 using Autofac;
 using Autofac.Core;
 using Microsoft.Extensions.Configuration;
@@ -18,19 +17,28 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Microsoft.Extensions.DependencyInjection;
 using Business.DependencyResolvers;
-using Business.ThirdPartyServices.StorageServices.Local;
 using Business.ThirdPartyServices.StorageServices.Azure;
 using Business.ThirdPartyServices.StorageServices;
 using Business.ThirdPartyServices.MessageBrokerServices;
 using Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ;
 using Entities.Dtos;
-using Business.ThirdPartyServices.MessageBrokerServices.NewFolder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
 using System.Reflection;
 using Business.ThirdPartyServices.PaymentServices.IyziPay;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
+using Microsoft.AspNetCore.HttpLogging;
+using Serilog.Context;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Serilog.Sinks.MSSqlServer;
+using System.Data;
+using System.Collections.ObjectModel;
+using WebAPI.Configurations;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,7 +81,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = tokenOptions.Issuer,
             ValidAudience = tokenOptions.Audience,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+            IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey),
+
+            NameClaimType = ClaimTypes.Name
         };
     });
 
@@ -88,6 +98,49 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).Conf
 });
 
 
+SqlColumn sqlColumn = new SqlColumn();
+sqlColumn.ColumnName = "UserName";
+sqlColumn.DataType = System.Data.SqlDbType.NVarChar;
+sqlColumn.PropertyName = "UserName";
+sqlColumn.DataLength = 50;
+sqlColumn.AllowNull = true;
+ColumnOptions columnOpt = new ColumnOptions();
+columnOpt.Store.Remove(StandardColumn.Properties);
+columnOpt.Store.Add(StandardColumn.LogEvent);
+columnOpt.AdditionalColumns = new Collection<SqlColumn> { sqlColumn };
+
+Logger log = new LoggerConfiguration()
+    //.WriteTo.Console()
+    .WriteTo.File("logs/log.txt")
+    .WriteTo.MSSqlServer(
+    connectionString: builder.Configuration.GetConnectionString("MSSQL"),
+     sinkOptions: new MSSqlServerSinkOptions
+     {
+         AutoCreateSqlTable = true,
+         TableName = "Logs",
+     },
+     appConfiguration: null,
+     columnOptions: columnOpt
+    )
+    .Enrich.FromLogContext()
+    .Enrich.With<CustomUserNameColumn>()
+    .MinimumLevel.Information()
+    .CreateLogger();
+builder.Host.UseSerilog(log);
+
+//Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
+
+//builder.Host.UseSerilog(((ctx, lc) => lc
+//.ReadFrom.Configuration(ctx.Configuration)));
+
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("sec-ch-ua");
+    logging.MediaTypeOptions.AddText("application/javascript");
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+});
 builder.Services.AddMemoryCache();
 //builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
 
@@ -113,17 +166,28 @@ app.UseCors();
 app.UseRouting();
 
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    var username = context.User?.Identity?.Name;
+    LogContext.PushProperty("user_name", username);
+    await next();
+});
+
+app.UseSerilogRequestLogging();
+
+app.UseHttpLogging();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
-
 
 app.MapControllers();
 
