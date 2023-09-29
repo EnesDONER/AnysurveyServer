@@ -39,6 +39,7 @@ using System.Data;
 using System.Collections.ObjectModel;
 using WebAPI.Configurations;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,10 +105,18 @@ sqlColumn.DataType = System.Data.SqlDbType.NVarChar;
 sqlColumn.PropertyName = "UserName";
 sqlColumn.DataLength = 50;
 sqlColumn.AllowNull = true;
+
+SqlColumn sqlColumn2 = new SqlColumn();
+sqlColumn2.ColumnName = "UserId";
+sqlColumn2.DataType = System.Data.SqlDbType.NVarChar;
+sqlColumn2.PropertyName = "UserId";
+sqlColumn2.DataLength = 50;
+sqlColumn2.AllowNull = true;
+
 ColumnOptions columnOpt = new ColumnOptions();
 columnOpt.Store.Remove(StandardColumn.Properties);
 columnOpt.Store.Add(StandardColumn.LogEvent);
-columnOpt.AdditionalColumns = new Collection<SqlColumn> { sqlColumn };
+columnOpt.AdditionalColumns = new Collection<SqlColumn> { sqlColumn,sqlColumn2 };
 
 Logger log = new LoggerConfiguration()
     //.WriteTo.Console()
@@ -123,6 +132,7 @@ Logger log = new LoggerConfiguration()
      columnOptions: columnOpt
     )
     .Enrich.FromLogContext()
+    .Enrich.With<CustomUserIdColumn>()
     .Enrich.With<CustomUserNameColumn>()
     .MinimumLevel.Information()
     .CreateLogger();
@@ -175,10 +185,17 @@ app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {
+    var userid = context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    LogContext.PushProperty("user_id", userid);
+    await next();
+});
+app.Use(async (context, next) =>
+{
     var username = context.User?.Identity?.Name;
     LogContext.PushProperty("user_name", username);
     await next();
 });
+
 
 app.UseSerilogRequestLogging();
 
