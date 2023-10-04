@@ -17,5 +17,6 @@ namespace Entities.Concrete
         public string CompanyName { get; set; }
         public string Description { get; set; }
         public string VideoURL { get; set; }
+        public string VideoImage { get; set; }
     }
 }

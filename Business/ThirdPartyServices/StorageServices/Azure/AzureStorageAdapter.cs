@@ -53,13 +53,16 @@ namespace Business.ThirdPartyServices.StorageServices.Azure
             List<FileUploadResponseDto> datas = new();
             foreach (IFormFile file in files)
             {
-                string fileNewName = id+"-"+file.FileName;
-                BlobClient blobClient = _blobContainerClient.GetBlobClient(fileNewName);
+                string newFileName = $"{NameOperation.CharacterRegulatory(file.FileName)}";
+                string unifiedFileName = id + "-" + newFileName;
+
+
+                BlobClient blobClient = _blobContainerClient.GetBlobClient(unifiedFileName);
                 await blobClient.UploadAsync(file.OpenReadStream());
                 FileUploadResponseDto fileUploadResponseDto = new()
                 {
-                    FileName= fileNewName,
-                    PathOrContainerName = $"{uri}/{containerName}/{fileNewName}"
+                    FileName= unifiedFileName,
+                    PathOrContainerName = $"{uri}/{containerName}/{unifiedFileName}"
                 };
                 
                 datas.Add(fileUploadResponseDto);
@@ -73,13 +76,16 @@ namespace Business.ThirdPartyServices.StorageServices.Azure
             await _blobContainerClient.CreateIfNotExistsAsync();
             await _blobContainerClient.SetAccessPolicyAsync(PublicAccessType.BlobContainer);
 
-            string fileNewName = id + "-" + file.FileName;
-            BlobClient blobClient = _blobContainerClient.GetBlobClient(fileNewName);
+            string newFileName = $"{NameOperation.CharacterRegulatory(file.FileName)}";
+            string unifiedFileName = id + "-" + newFileName;
+
+
+            BlobClient blobClient = _blobContainerClient.GetBlobClient(unifiedFileName);
             await blobClient.UploadAsync(file.OpenReadStream());
             FileUploadResponseDto fileUploadResponseDto = new()
             {
-                FileName = fileNewName,
-                PathOrContainerName = $"{uri}/{containerName}/{fileNewName}"
+                FileName = unifiedFileName,
+                PathOrContainerName = $"{uri}/{containerName}/{unifiedFileName}"
             };
             
             return fileUploadResponseDto;

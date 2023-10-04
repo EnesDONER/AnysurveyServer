@@ -30,7 +30,6 @@ namespace Business.ThirdPartyServices.StorageServices.Azure
                 .Replace(",", "")
                 .Replace(";", "")
                 .Replace(":", "")
-                .Replace(".", "-")
                 .Replace("Ö", "o")
                 .Replace("ö", "o")
                 .Replace("Ü", "u")

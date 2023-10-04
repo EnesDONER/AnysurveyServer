@@ -47,18 +47,35 @@ namespace Business.Concrete
 
         [CacheRemoveAspect("IAdService.Get")]
         [SecuredOperation("partnership")]
-        public IResult Add(Ad ad)
+        public async Task<IResult> Add(AdForRequestDto adForRequestDto)
         {
+            var result = BusinessRules.Run(checkIfFileTypeIsImage(adForRequestDto.VideoImage));
+            if (result != null)
+            {
+                return new ErrorResult(result.Message);
+            }
+            Ad ad = new()
+            {
+                CompanyName = adForRequestDto.CompanyName,
+                Description = adForRequestDto.Description,
+                OwnerUserId = adForRequestDto.OwnerUserId,
+                VideoURL = adForRequestDto.VideoUrl,
+            };
+
+            var imageStorage =  await _storageService.UploadSingleFileAsync(adForRequestDto.ImageContainerName, adForRequestDto.OwnerUserId.ToString(), adForRequestDto.VideoImage);
+            ad.VideoImage = imageStorage.PathOrContainerName;
+
             _addDal.Add(ad);
 
             return new SuccessResult(Messages.Added);
         }
 
+
         [CacheRemoveAspect("IAdService.Get")]
         [SecuredOperation("partnership")]
         public async Task<IResult> AddAdandUploadAsync(AdUploadDto adUploadDto)
         {
-            var result = BusinessRules.Run(checkIfFileTypeIsVideo(adUploadDto.FormFile));
+            var result = BusinessRules.Run(checkIfFileTypeIsVideo(adUploadDto.VideoUri), checkIfFileTypeIsImage(adUploadDto.VideoImage));
             if (result != null)
             {
                 return new ErrorResult(result.Message);
@@ -70,12 +87,15 @@ namespace Business.Concrete
                 OwnerUserId = adUploadDto.OwnerUserId
             };
 
-            var content = await _storageService.UploadSingleFileAsync(adUploadDto.ContainerName,adUploadDto.OwnerUserId.ToString() , adUploadDto.FormFile);
-            ad.VideoURL = content.PathOrContainerName;
-            Add(ad);
+            var videoStorage = await _storageService.UploadSingleFileAsync(adUploadDto.VideoContainerName,adUploadDto.OwnerUserId.ToString() , adUploadDto.VideoUri);
+            var imageStorage = await _storageService.UploadSingleFileAsync(adUploadDto.ImageContainerName,adUploadDto.OwnerUserId.ToString() , adUploadDto.VideoImage);
+            ad.VideoURL = videoStorage.PathOrContainerName;
+            ad.VideoImage = imageStorage.PathOrContainerName;
+            _addDal.Add(ad);
             
             return new SuccessResult(Messages.Added);
         }
+     
         private IResult checkIfFileTypeIsVideo(IFormFile file)
         {
             if (file != null && Path.GetExtension(file.FileName).Equals(".mp4", StringComparison.OrdinalIgnoreCase))
@@ -86,6 +106,21 @@ namespace Business.Concrete
             {
                 return new ErrorResult("This file is not a video");
             }
+        }
+        private IResult checkIfFileTypeIsImage(IFormFile file)
+        {
+            if (file != null)
+            {
+                string fileExtension = Path.GetExtension(file.FileName);
+                if (fileExtension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                    fileExtension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                    fileExtension.Equals(".png", StringComparison.OrdinalIgnoreCase) ||
+                    fileExtension.Equals(".gif", StringComparison.OrdinalIgnoreCase))
+                {
+                    return new SuccessResult();
+                }
+            }
+            return new ErrorResult("This file is not a supported image");
         }
         public IDataResult<List<Ad>> GetAllFilteredAdByUserId(int userId)
         {

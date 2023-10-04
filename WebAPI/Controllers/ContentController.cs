@@ -62,16 +62,6 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-
-
-        [HttpPost("upload")]
-        public async Task<IActionResult> Upload(string containerName,string id, IFormFileCollection files)
-        {
-            var result = await _addService.Upload(containerName,id, files);
-
-            return Ok(result);
-        }
-
         [HttpGet("getallfile")]
         public IActionResult GetAllFile(string containerName)
         {
@@ -82,21 +72,6 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-
-        [HttpGet("hasfile")]
-        public IActionResult HasFile(string containerName,string fileName)
-        {
-            var result = _addService.HasFile(containerName,fileName);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result.Message);
-        }
-
-
-
-
 
         //kişinin eklediği anketleri listeler
         [HttpGet("getallsurveysbyowneruserid")]
@@ -152,10 +127,10 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
         [HttpPost("addad")]
-        public IActionResult AddAd(Ad ad)
+        public async Task<IActionResult> AddAd([FromForm]  AdForRequestDto adForRequestDto)
         {
      
-            var result = _addService.Add(ad);
+            var result = await _addService.Add(adForRequestDto);
             if (result.Success)
             {
                 return Ok(result);

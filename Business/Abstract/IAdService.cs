@@ -13,7 +13,7 @@ namespace Business.Abstract
 {
     public interface IAdService
     {
-        IResult Add(Ad ad);
+        Task<IResult> Add(AdForRequestDto adForRequestDto);
         Task<IResult> AddAdandUploadAsync(AdUploadDto adUploadDto);
         IDataResult<List<Ad>> GetAllFilteredAdByUserId(int userId);
         IDataResult<Ad> GetById(string id);
