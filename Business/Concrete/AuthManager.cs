@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Business.Security.Encryption;
 using Business.Constants;
+using Core.Utilities.Business;
 
 namespace Business.Concrete
 {
@@ -35,6 +36,11 @@ namespace Business.Concrete
         {
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            var result = BusinessRules.Run(UserExists(userForRegisterDto.Email));
+            if(result != null)
+            {
+                return new ErrorDataResult<User>(result.Message);
+            }
             var user = new User
             {
                 Email = userForRegisterDto.Email,

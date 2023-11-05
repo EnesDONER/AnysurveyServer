@@ -13,7 +13,7 @@ namespace DataAccess.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-TOT4JFM;Database=AnySurveyDB;Trusted_Connection=true;TrustServerCertificate=true;");
+            optionsBuilder.UseSqlServer(@"Server=tcp:azure-cloud.database.windows.net;Database=AnySurveyDB;User ID=enes;Password=425385Ee;Trusted_Connection=False;Encrypt=True;");
         }
 
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }

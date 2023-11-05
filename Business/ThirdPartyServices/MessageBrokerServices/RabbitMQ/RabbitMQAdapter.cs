@@ -20,13 +20,8 @@ namespace Business.ThirdPartyServices.MessageBrokerServices.RabbitMQ
         {
             if (factory == null)
             {
-                factory = new ConnectionFactory()
-                {
-                    HostName = "localhost",
-                    Port = 5672,
-                    UserName = "guest",
-                    Password = "guest"
-                };
+                factory = new ConnectionFactory();
+                factory.Uri = new Uri("amqps://yoeopshd:g3ENK9omcMwWqeGY8PsRvF2HXwAj83y5@moose.rmq.cloudamqp.com/yoeopshd");
             }
         }
         public void AddQuee(string queueName, T messageDto)
